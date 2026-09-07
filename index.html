@@ -20,7 +20,6 @@
         body { font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        /* Header */
         .header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .header-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .logo-text { font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }
@@ -29,20 +28,17 @@
         .nav a { color: #fff; text-decoration: none; font-size: 0.95rem; }
         .nav-cta { background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
-        /* Hero Section */
         .hero { padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }
         .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
         .hero h1 span { color: var(--primary); }
         .hero p { font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }
 
-        /* Sections */
         .section { padding: 80px 0; }
         .section-white { background: #fff; }
         .section-title { text-align: center; margin-bottom: 40px; }
         .section-title h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }
         .section-title p { color: var(--text-muted); }
 
-        /* Partner Grid */
         .partner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .card { background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }
         .card:hover { transform: translateY(-3px); }
@@ -54,46 +50,38 @@
         .tel { font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }
         .btn-call { background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
 
-        /* Area Links */
         .area-grid { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
         .area-btn { background: #fff; border: 1.5px solid var(--primary); color: var(--primary); padding: 12px 28px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: all 0.2s; }
         .area-btn:hover { background: var(--primary); color: #fff; }
 
-        /* Footer */
         footer { background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }
         footer strong { color: #aaa; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header class="header">
         <div class="header-inner">
             <a href="/" class="logo-text">오프모드<span>건마사랑</span></a>
             <nav class="nav">
                 <a href="#partners">공식제휴샵</a>
                 <a href="#regions">지역안내</a>
-                <a href="tel:0507-1280-3344" class="nav-cta">제휴 문의</a>
+                <a href="tel:050712803344" class="nav-cta">제휴 문의</a>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <style>
-        /* 추가 인라인 조절용 */
-    </style>
     <section class="hero">
         <div class="container">
             <div style="margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-            <img src="images/banner.jpg" alt="오프모드건마사랑 프리미엄 배너" style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
-        </div>
+                <img src="images/banner.jpg" alt="오프모드건마사랑 프리미엄 배너" style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
+            </div>
             <span style="color: var(--primary); font-size: 0.85rem; letter-spacing: 2px; font-weight: 700; display: inline-block; margin-bottom: 15px;">24H 수도권 프라이빗 힐링 플랫폼</span>
             <h1>일상의 긴장을 끄고(Off),<br>완벽한 휴식을 켜다 <span>오프모드건마사랑</span></h1>
             <p>서울·경기·인천 수도권 전 지역 신속 방문 · 100% 후불제 안심 케어 서비스</p>
         </div>
     </section>
 
-    <!-- Partners Section (5개 제휴샵 배치) -->
     <section class="section section-white" id="partners">
         <div class="container">
             <div class="section-title">
@@ -160,7 +148,6 @@
         </div>
     </section>
 
-    <!-- Region Quick Links -->
     <section class="section" id="regions">
         <div class="container">
             <div class="section-title">
@@ -175,7 +162,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <p><strong>오프모드건마사랑</strong> | 수도권 힐링 정보 플랫폼</p>

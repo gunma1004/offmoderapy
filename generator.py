@@ -371,7 +371,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
 def generate_all_sites():
     print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 자동 빌드 시작...")
     
-    output_dir = "dist"
+    output_dir = "."
     os.makedirs(output_dir, exist_ok=True)
     
     # 1) 메인 인덱스 페이지 자동 생성
