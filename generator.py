@@ -104,7 +104,7 @@ incheon_regions = {
     "ongjin": {"name": "옹진군", "dongs": ["북도면", "연평면", "백령면", "대청면", "덕적면", "자월면", "영흥면"]}
 }
 
-# 6. 메인 인덱스 페이지 HTML 템플릿 (작성해주신 코드 그대로 반영)
+# 6. 메인 인덱스 페이지 HTML 템플릿 (네이버 소유권 태그 포함)
 INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -114,6 +114,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
     <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
     <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
     <meta name="robots" content="index,follow">
+    <meta name="naver-site-verification" content="a0e02e4f2dcaf270179e713519c690fbe449e8c5" />
     <meta name="theme-color" content="#ff6b35">
     <link rel="canonical" href="{DOMAIN}/">
     <link rel="stylesheet" href="./styles.css">
@@ -281,7 +282,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 </html>
 """
 
-# 7. 지역별 페이지 HTML 템플릿
+# 7. 지역별 페이지 HTML 템플릿 (네이버 소유권 태그 포함)
 def get_regional_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     
@@ -324,6 +325,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
     <title>{area_title} 출장마사지·스웨디시 제휴샵 | 오프모드건마사랑</title>
     <meta name="description" content="{area_title} 지역 전문 제휴업체 정보. 30분 내 방문, 아로마 및 스웨디시 100% 후불제 안심 케어.">
     <meta name="robots" content="index,follow">
+    <meta name="naver-site-verification" content="a0e02e4f2dcaf270179e713519c690fbe449e8c5" />
     <link rel="canonical" href="{DOMAIN}">
     <link rel="stylesheet" href="{prefix}styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -367,10 +369,11 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
 </html>
 """
 
-# 8. 전체 빌드 실행 함수
+# 8. 전체 빌드 실행 함수 (출력 경로를 루트 "."로 설정)
 def generate_all_sites():
-    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 자동 빌드 시작...")
+    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 빌드 시작...")
     
+    # 루트 디렉토리에 직접 생성하도록 설정 (. )
     output_dir = "."
     os.makedirs(output_dir, exist_ok=True)
     
