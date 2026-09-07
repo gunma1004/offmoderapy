@@ -339,7 +339,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
     <meta name="description" content="{page_desc}">
     <meta name="robots" content="index,follow">
     
-    <!-- Open Graph 태그 (지역 페이지) -->
+    <!-- Open Graph 태그 (지역 페이지 최적화) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="{page_title}">
     <meta property="og:description" content="{page_desc}">
@@ -358,7 +358,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
         .logo-text {{ color: #fff; font-weight: 700; text-decoration: none; font-size: 1.2rem; }}
         .logo-text span {{ color: var(--primary); }}
         .main-content {{ padding: 120px 20px 80px; text-align: center; }}
-        .partner-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; text-align: left; }}
+        .partner-grid {{ display: grid; grid-type: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; text-align: left; }}
     </style>
 </head>
 <body>
