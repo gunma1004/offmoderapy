@@ -4,6 +4,7 @@ from datetime import datetime
 # 1. 사이트 기본 설정
 DOMAIN = "https://offmoderapy.netlify.app"
 SITE_NAME = "오프모드건마사랑"
+NAVER_VERIFICATION = "a0e02e4f2dcaf270179e713519c690fbe449e8c5"
 
 # 2. 제휴 업체 정보 데이터 (5개 업체)
 PARTNER_SHOPS = [
@@ -11,7 +12,7 @@ PARTNER_SHOPS = [
     {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
     {"name": "한국미인테라피", "tel": "0507-1280-3201", "desc": "편안하고 아늑한 1:1 맞춤 케어"},
     {"name": "오늘밤테라피", "tel": "0507-1280-3199", "desc": "24시 신속 방문 및 피로 회복 전문"},
-    {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 코스"}
+    {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
 ]
 
 # 3. 서울특별시 25개 구 및 법정동 데이터
@@ -104,17 +105,25 @@ incheon_regions = {
     "ongjin": {"name": "옹진군", "dongs": ["북도면", "연평면", "백령면", "대청면", "덕적면", "자월면", "영흥면"]}
 }
 
-# 6. 메인 인덱스 페이지 HTML 템플릿 (네이버 소유권 태그 포함)
+# 6. 메인 인덱스 페이지 HTML 템플릿
 INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="naver-site-verification" content="{NAVER_VERIFICATION}" />
     <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
     <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
     <meta name="robots" content="index,follow">
-    <meta name="naver-site-verification" content="a0e02e4f2dcaf270179e713519c690fbe449e8c5" />
+    
+    <!-- Open Graph (SNS 미리보기 최적화) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
+    <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
+    <meta property="og:url" content="{DOMAIN}/">
+    <meta property="og:site_name" content="오프모드건마사랑">
+
     <meta name="theme-color" content="#ff6b35">
     <link rel="canonical" href="{DOMAIN}/">
     <link rel="stylesheet" href="./styles.css">
@@ -282,7 +291,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 </html>
 """
 
-# 7. 지역별 페이지 HTML 템플릿 (네이버 소유권 태그 포함)
+# 7. 지역별 페이지 HTML 템플릿
 def get_regional_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     
@@ -316,16 +325,27 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
         </div>
         """
 
+    page_title = f"{area_title} 출장마사지·스웨디시 제휴샵 | 오프모드건마사랑"
+    page_desc = f"{area_title} 지역 전문 제휴업체 정보. 30분 내 방문, 아로마 및 스웨디시 100% 후불제 안심 케어."
+
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{area_title} 출장마사지·스웨디시 제휴샵 | 오프모드건마사랑</title>
-    <meta name="description" content="{area_title} 지역 전문 제휴업체 정보. 30분 내 방문, 아로마 및 스웨디시 100% 후불제 안심 케어.">
+    <meta name="naver-site-verification" content="{NAVER_VERIFICATION}" />
+    <title>{page_title}</title>
+    <meta name="description" content="{page_desc}">
     <meta name="robots" content="index,follow">
-    <meta name="naver-site-verification" content="a0e02e4f2dcaf270179e713519c690fbe449e8c5" />
+    
+    <!-- Open Graph (SNS 미리보기 최적화) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{page_title}">
+    <meta property="og:description" content="{page_desc}">
+    <meta property="og:url" content="{DOMAIN}">
+    <meta property="og:site_name" content="오프모드건마사랑">
+
     <link rel="canonical" href="{DOMAIN}">
     <link rel="stylesheet" href="{prefix}styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -369,11 +389,10 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
 </html>
 """
 
-# 8. 전체 빌드 실행 함수 (출력 경로를 루트 "."로 설정)
+# 8. 전체 빌드 실행 함수
 def generate_all_sites():
-    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 빌드 시작...")
+    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 자동 빌드 시작...")
     
-    # 루트 디렉토리에 직접 생성하도록 설정 (. )
     output_dir = "."
     os.makedirs(output_dir, exist_ok=True)
     
