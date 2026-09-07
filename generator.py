@@ -5,7 +5,7 @@ from datetime import datetime
 DOMAIN = "https://offmoderapy.netlify.app"
 SITE_NAME = "오프모드건마사랑"
 
-# 2. 제휴 업체 정보 데이터 (요청하신 5개 업체)
+# 2. 제휴 업체 정보 데이터 (5개 업체)
 PARTNER_SHOPS = [
     {"name": "퀸즈홈테라피", "tel": "0507-1280-3296", "desc": "프리미엄 맞춤 홈케어 및 스웨디시 전문"},
     {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
@@ -14,7 +14,7 @@ PARTNER_SHOPS = [
     {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 코스"}
 ]
 
-# 3. 서울특별시 25개 구 및 전체 법정동 데이터
+# 3. 서울특별시 25개 구 및 법정동 데이터
 seoul_regions = {
     "jongno": {"name": "종로구", "dongs": ["청운동", "신교동", "궁정동", "효자동", "창성동", "통인동", "누상동", "누하동", "옥인동", "체부동", "통의동", "사직동", "도렴동", "당주동", "내수동", "신문로1가", "신문로2가", "세종로", "종로1가", "종로2가", "종로3가", "종로4가", "종로5가", "종로6가", "이화동", "연건동", "충신동", "동숭동", "혜화동", "명륜1가", "명륜2가", "명륜3가", "명륜4가", "창신동", "숭인동", "효제동", "가회동", "삼청동", "안국동", "익선동", "낙원동", "돈의동", "장사동", "관수동", "인사동", "원서동", "제동", "계동", "화동", "팔판동", "묘동", "봉익동", "와룡동", "권농동", "서린동", "수송동", "견지동", "공평동", "관철동"]},
     "jung": {"name": "중구", "dongs": ["무교동", "다동", "태평로1가", "태평로2가", "남대문로1가", "남대문로2가", "남대문로3가", "남대문로4가", "남대문로5가", "봉래동1가", "봉래동2가", "회현동1가", "회현동2가", "회현동3가", "충무로1가", "충무로2가", "충무로3가", "충무로4가", "충무로5가", "명동1가", "명동2가", "필동1가", "필동2가", "필동3가", "주교동", "방산동", "오장동", "입정동", "산림동", "초동", "을지로1가", "을지로2가", "을지로3가", "을지로4가", "을지로5가", "황학동", "서소문동", "정동", "순화동", "중림동", "신당동", "흥인동", "무학동", "상왕십리동", "하왕십리동", "광희동1가", "광희동2가", "쌍림동", "장충동1가", "장충동2가"]},
@@ -43,7 +43,7 @@ seoul_regions = {
     "gangdong": {"name": "강동구", "dongs": ["고덕동", "상일동", "명일동", "암사동", "천호동", "성내동", "둔촌동", "강일동", "상일1동", "상일2동", "명일1동", "명일2동", "고덕1동", "고덕2동", "암사1동", "암사2동", "암사3동", "천호1동", "천호2동", "천호3동", "성내1동", "성내2동", "성내3동", "둔촌1동", "둔촌2동", "길동"]}
 }
 
-# 4. 경기도 전체 시·군·구 및 동/읍/면 데이터 (과천, 군포, 의왕, 안성 포함)
+# 4. 경기도 전체 시·군·구 데이터
 gyeonggi_regions = {
     "suwon-jangan": {"name": "수원시 장안구", "dongs": ["파장동", "정자동", "이목동", "율전동", "천천동", "영화동", "조원동", "송죽동"]},
     "suwon-gwonseon": {"name": "수원시 권선구", "dongs": ["세류동", "평동", "호매실동", "곡선동", "권선동", "입북동", "서둔동"]},
@@ -89,10 +89,10 @@ gyeonggi_regions = {
     "yeoncheon": {"name": "연천군", "dongs": ["연천읍", "전곡읍", "군남면", "청산면", "미산면", "백학면"]}
 }
 
-# 5. 인천광역시 최신 2군 9구 체제 반영 데이터
+# 5. 인천광역시 최신 2군 9구 체제 데이터
 incheon_regions = {
     "jemulpo": {"name": "제물포구", "dongs": ["중구내륙동", "동구동", "내동", "관동", "북성동", "송월동", "송현동", "화수동", "화평동", "만석동", "송림동"]},
-    "yeongjong": {"name": "영종구", "dongs": ["중산동", "운서동", "운남동", "덕교동", "을왕동", "무의동"]},
+    "yeongjong": {"name": "영종구", "dongs": ["중산동", "운서동", "운남동", "덕교동", "ulwang-dong", "무의동"]},
     "michuhol": {"name": "미추홀구", "dongs": ["도화동", "주안동", "학익동", "관교동", "문학동", "숭의동", "용현동"]},
     "yeonsu": {"name": "연수구", "dongs": ["옥련동", "연수동", "청학동", "동춘동", "송도동"]},
     "namdong": {"name": "남동구", "dongs": ["구월동", "간석동", "만수동", "남촌동", "수산동", "서창동", "논현동", "도림동", "고잔동"]},
@@ -104,7 +104,184 @@ incheon_regions = {
     "ongjin": {"name": "옹진군", "dongs": ["북도면", "연평면", "백령면", "대청면", "덕적면", "자월면", "영흥면"]}
 }
 
-# 6. HTML 템플릿 생성 함수 (상단 이미지 배너 + 5개 제휴 업체 + 하위 지역 링크 포함)
+# 6. 메인 인덱스 페이지 HTML 템플릿 (작성해주신 코드 그대로 반영)
+INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
+    <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
+    <meta name="robots" content="index,follow">
+    <meta name="theme-color" content="#ff6b35">
+    <link rel="canonical" href="{DOMAIN}/">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        :root {{ --primary: #ff6b35; --text-dark: #1f2430; --text-muted: #5b6472; --bg-section: #fff5f0; }}
+        html {{ scroll-behavior: smooth; }}
+        body {{ font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }}
+        .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
+        
+        .header {{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }}
+        .header-inner {{ display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
+        .logo-text {{ font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }}
+        .logo-text span {{ color: var(--primary); }}
+        .nav {{ display: flex; gap: 24px; align-items: center; }}
+        .nav a {{ color: #fff; text-decoration: none; font-size: 0.95rem; }}
+        .nav-cta {{ background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }}
+
+        .hero {{ padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }}
+        .hero h1 {{ font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }}
+        .hero h1 span {{ color: var(--primary); }}
+        .hero p {{ font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }}
+
+        .section {{ padding: 80px 0; }}
+        .section-white {{ background: #fff; }}
+        .section-title {{ text-align: center; margin-bottom: 40px; }}
+        .section-title h2 {{ font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }}
+        .section-title p {{ color: var(--text-muted); }}
+
+        .partner-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }}
+        .card {{ background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }}
+        .card:hover {{ transform: translateY(-3px); }}
+        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+        .card h3 {{ font-size: 1.15rem; color: var(--text-dark); font-weight: 700; }}
+        .badge {{ background: #fff5f0; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }}
+        .card p {{ color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }}
+        .card-footer {{ display: flex; justify-content: space-between; align-items: center; }}
+        .tel {{ font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }}
+        .btn-call {{ background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }}
+
+        .area-grid {{ display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }}
+        .area-btn {{ background: #fff; border: 1.5px solid var(--primary); color: var(--primary); padding: 12px 28px; border-radius: 30px; text-decoration: none; font-weight: 500; transition: all 0.2s; }}
+        .area-btn:hover {{ background: var(--primary); color: #fff; }}
+
+        footer {{ background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }}
+        footer strong {{ color: #aaa; }}
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo-text">오프모드<span>건마사랑</span></a>
+            <nav class="nav">
+                <a href="#partners">공식제휴샵</a>
+                <a href="#regions">지역안내</a>
+                <a href="tel:050712803344" class="nav-cta">제휴 문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div style="margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <img src="images/banner.jpg" alt="오프모드건마사랑 프리미엄 배너" style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
+            </div>
+            <span style="color: var(--primary); font-size: 0.85rem; letter-spacing: 2px; font-weight: 700; display: inline-block; margin-bottom: 15px;">24H 수도권 프라이빗 힐링 플랫폼</span>
+            <h1>일상의 긴장을 끄고(Off),<br>완벽한 휴식을 켜다 <span>오프모드건마사랑</span></h1>
+            <p>서울·경기·인천 수도권 전 지역 신속 방문 · 100% 후불제 안심 케어 서비스</p>
+        </div>
+    </section>
+
+    <section class="section section-white" id="partners">
+        <div class="container">
+            <div class="section-title">
+                <h2>공식 제휴 힐링샵 안내</h2>
+                <p>엄선된 전문 관리사의 맞춤형 프리미엄 케어 서비스</p>
+            </div>
+            <div class="partner-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>퀸즈홈테라피</h3>
+                        <span class="badge">제휴점</span>
+                    </div>
+                    <p>프리미엄 맞춤 홈케어 및 스웨디시 전문 관리 프로그램</p>
+                    <div class="card-footer">
+                        <span class="tel">📞 0507-1280-3296</span>
+                        <a href="tel:050712803296" class="btn-call">전화 연결</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>한국골든테라피</h3>
+                        <span class="badge">제휴점</span>
+                    </div>
+                    <p>정통 힐링 아로마 및 피로 회복 전신 관리 시스템</p>
+                    <div class="card-footer">
+                        <span class="tel">📞 0507-1280-3360</span>
+                        <a href="tel:050712803360" class="btn-call">전화 연결</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>한국미인테라피</h3>
+                        <span class="badge">제휴점</span>
+                    </div>
+                    <p>편안하고 아늑한 환경에서 진행되는 1:1 맞춤 케어</p>
+                    <div class="card-footer">
+                        <span class="tel">📞 0507-1280-3201</span>
+                        <a href="tel:050712803201" class="btn-call">전화 연결</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>오늘밤테라피</h3>
+                        <span class="badge">제휴점</span>
+                    </div>
+                    <p>24시 신속 방문 및 일상 속 깊은 피로 회복 전문</p>
+                    <div class="card-footer">
+                        <span class="tel">📞 0507-1280-3199</span>
+                        <a href="tel:050712803199" class="btn-call">전화 연결</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>주주테라피</h3>
+                        <span class="badge">제휴점</span>
+                    </div>
+                    <p>부드러운 감성 힐링과 전문 테라피 복합 코스</p>
+                    <div class="card-footer">
+                        <span class="tel">📞 0507-1280-3197</span>
+                        <a href="tel:050712803197" class="btn-call">전화 연결</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="regions">
+        <div class="container">
+            <div class="section-title">
+                <h2>수도권 서비스 지역</h2>
+                <p>서울, 경기, 인천 구/동 단위 실시간 제휴 안내</p>
+            </div>
+            <div class="area-grid">
+                <a href="./seoul/" class="area-btn">서울 전지역</a>
+                <a href="./gyeonggi/" class="area-btn">경기 전지역</a>
+                <a href="./incheon/" class="area-btn">인천 전지역</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p><strong>오프모드건마사랑</strong> | 수도권 힐링 정보 플랫폼</p>
+            <p>본 사이트는 제휴 업체의 정보를 안내하는 정보 플랫폼이며 통신판매의 당사자가 아닙니다. 서비스 이용 관련 사항은 각 제휴점에 직접 문의하시기 바랍니다.</p>
+            <p style="margin-top: 20px;">&copy; 2026 오프모드건마사랑 All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+"""
+
+# 7. 지역별 페이지 HTML 템플릿
 def get_regional_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     
@@ -171,20 +348,15 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
     </header>
     <main class="main-content">
         <div class="container">
-            
-            <!-- 🖼️ 지역별 페이지 상단 이미지 배너 영역 -->
             <div style="margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 900px; margin-left: auto; margin-right: auto;">
                 <img src="{prefix}images/banner.jpg" alt="{area_title} 프리미엄 제휴 배너" style="width: 100%; height: auto; display: block; max-height: 320px; object-fit: cover;">
             </div>
-
             <div style="background:#fff; border-radius:16px; padding:30px 20px; max-width:900px; margin:0 auto 30px; box-shadow:0 4px 20px rgba(0,0,0,0.05);">
                 <span style="color:var(--primary); font-weight:700; font-size:0.9rem;">수도권 프리미엄 제휴 플랫폼</span>
                 <h1 style="font-size:2rem; margin:15px 0 10px;">{area_title} 공식 제휴 힐링샵 안내</h1>
                 <p style="color:var(--text-muted); margin-bottom:10px;">{area_title} 전 지역 신속 방문 가능한 엄선된 제휴 업체 리스트입니다.</p>
             </div>
-
             {sub_links_html}
-
             <h2 style="font-size:1.4rem; margin-bottom:15px; text-align:left;">📍 {area_title} 실시간 제휴 업체 현황</h2>
             <div class="partner-grid">
                 {partners_html}
@@ -195,13 +367,18 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
 </html>
 """
 
-# 7. 전체 생성 실행 루프
+# 8. 전체 빌드 실행 함수
 def generate_all_sites():
-    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 정적 페이지 빌드 시작...")
+    print("🚀 [오프모드건마사랑] 수도권 전체 시/도, 구, 동 및 메인 페이지 자동 빌드 시작...")
     
     output_dir = "dist"
     os.makedirs(output_dir, exist_ok=True)
     
+    # 1) 메인 인덱스 페이지 자동 생성
+    with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(INDEX_HTML_TEMPLATE)
+    print("✅ 메인 인덱스(index.html) 생성 완료!")
+
     url_list = [f"{DOMAIN}/"]
     page_count = 1
 
