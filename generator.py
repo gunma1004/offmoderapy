@@ -291,7 +291,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 </html>
 """
 
-# 7. 지역별 페이지 HTML 템플릿
+# 7. 지역별 페이지 HTML 템플릿 (OG 제목/설명 완벽 포함)
 def get_regional_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     
@@ -339,7 +339,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
     <meta name="description" content="{page_desc}">
     <meta name="robots" content="index,follow">
     
-    <!-- Open Graph (SNS 미리보기 최적화) -->
+    <!-- Open Graph (지역 페이지 미리보기 최적화) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="{page_title}">
     <meta property="og:description" content="{page_desc}">
