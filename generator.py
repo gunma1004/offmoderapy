@@ -117,7 +117,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
     <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
     <meta name="robots" content="index,follow">
     
-    <!-- Open Graph (SNS 미리보기 최적화) -->
+    <!-- Open Graph 태그 -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
     <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 아로마, 스웨디시, 감성 힐링 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
@@ -291,7 +291,7 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 </html>
 """
 
-# 7. 지역별 페이지 HTML 템플릿 (OG 제목/설명 완벽 포함)
+# 7. 지역별 페이지 HTML 템플릿 (OG 태그 확실히 포함)
 def get_regional_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     
@@ -339,7 +339,7 @@ def get_regional_html_template(area_title, path_depth, sub_links=None):
     <meta name="description" content="{page_desc}">
     <meta name="robots" content="index,follow">
     
-    <!-- Open Graph (지역 페이지 미리보기 최적화) -->
+    <!-- Open Graph 태그 (지역 페이지) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="{page_title}">
     <meta property="og:description" content="{page_desc}">
