@@ -1,11 +1,10 @@
 import os
 import random
 
-# 1. 사이트 설정
-DOMAIN = "https://offmoderapy.netlify.app"
-OUTPUT_DIR = "dist_evasion"
+# 1. 고정 출력 경로 (dist/evasion)
+OUTPUT_DIR = "dist/evasion"
 
-# 2. 30여 가지 출장 회피형 마사지 키워드 확장 풀
+# 2. 30여 가지 출장 회피형 마사지 및 테라피 키워드 풀
 evasion_keywords = [
     "출장 웰니스 마사지", "출장 아로마 마사지", "출장 산후전후 마사지", "출장 스웨디시 마사지",
     "출장 타이 마사지", "출장 홈타이 마사지", "출장 림프 순환 마사지", "출장 딥티슈 마사지",
@@ -26,7 +25,7 @@ PARTNER_SHOPS = [
     {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
 ]
 
-# 4. 서울·경기·인천 전체 지역 및 구·동 데이터 내장
+# 4. 수도권 전 지역 및 모든 구·동 데이터 세트
 seoul_regions = {
     "jongno": {"name": "종로구", "dongs": ["청운동", "효자동", "삼청동", "부암동", "평창동", "무악동", "교남동", "가회동", "종로1가", "이화동", "혜화동", "창신동", "숭인동"]},
     "jung": {"name": "중구", "dongs": ["소공동", "회현동", "명동", "필동", "장충동", "광희동", "을지로동", "신당동", "다산동", "약수동", "청구동", "황학동", "중림동"]},
@@ -56,16 +55,65 @@ seoul_regions = {
 }
 
 gyeonggi_regions = {
+    # 수원시 (4개 구)
     "suwon-jangan": {"name": "수원시 장안구", "dongs": ["파장동", "정자동", "영화동", "송죽동", "조원동", "율천동"]},
     "suwon-gwonseon": {"name": "수원시 권선구", "dongs": ["세류동", "권선동", "곡선동", "평동", "호매실동", "서둔동"]},
     "suwon-paldal": {"name": "수원시 팔달구", "dongs": ["매교동", "매산동", "고등동", "화서동", "지동", "우만동", "인계동"]},
     "suwon-yeongtong": {"name": "수원시 영통구", "dongs": ["매탄동", "원천동", "영통동", "망포동", "광교동"]},
+    
+    # 성남시 (3개 구)
+    "seongnam-sujeong": {"name": "성남시 수정구", "dongs": ["신흥동", "태평동", "수진동", "단대동", "산성동", "상적동"]},
+    "seongnam-jungwon": {"name": "성남시 중원구", "dongs": ["성남동", "중앙동", "금광동", "은행동", "상대원동", "하대원동"]},
     "seongnam-bundang": {"name": "성남시 분당구", "dongs": ["분당동", "수내동", "정자동", "서현동", "이매동", "야탑동", "판교동", "삼평동"]},
+    
+    # 고양시 (3개 구)
     "goyang-deokyang": {"name": "고양시 덕양구", "dongs": ["원신동", "효자동", "화정동", "행신동", "성사동", "고양동", "능곡동"]},
     "goyang-ilsandong": {"name": "고양시 일산동구", "dongs": ["식사동", "중산동", "정발산동", "백석동", "마두동", "장항동"]},
     "goyang-ilsanseo": {"name": "고양시 일산서구", "dongs": ["일산동", "탄현동", "주엽동", "대화동", "덕이동"]},
+    
+    # 용인시 (3개 구)
+    "yongin-cheoin": {"name": "용인시 처인구", "dongs": ["역삼동", "유림동", "동부동", "포곡읍", "모현읍", "이동읍"]},
+    "yongin-giheung": {"name": "용인시 기흥구", "dongs": ["신갈동", "구성동", "마북동", "동백동", "보정동", "기흥동"]},
     "yongin-suji": {"name": "용인시 수지구", "dongs": ["풍덕천동", "신봉동", "죽전동", "동천동", "상현동", "성복동"]},
-    "bucheon": {"name": "부천시", "dongs": ["원미동", "심곡동", "소사동", "중동", "상동", "역곡동"]}
+    
+    # 부천시 (3개 구)
+    "bucheon-wonmi": {"name": "부천시 원미구", "dongs": ["원미동", "심곡동", "춘의동", "도당동", "중동", "상동"]},
+    "bucheon-sosa": {"name": "부천시 소사구", "dongs": ["소사본동", "범박동", "역곡동", "괴안동", "송내동"]},
+    "bucheon-ojeong": {"name": "부천시 오정구", "dongs": ["오정동", "고강동", "원종동", "성곡동"]},
+
+    # 안양시 (2개 구)
+    "anyang-manan": {"name": "안양시 만안구", "dongs": ["안양동", "석수동", "박달동"]},
+    "anyang-dongan": {"name": "안양시 동안구", "dongs": ["비산동", "관양동", "평촌동", "호계동"]},
+
+    # 안산시 (2개 구)
+    "ansan-sangrok": {"name": "안산시 상록구", "dongs": ["일동", "이동", "사동", "본오동", "반월동"]},
+    "ansan-danwon": {"name": "안산시 단원구", "dongs": ["고잔동", "와동", "원곡동", "초지동", "선부동"]},
+
+    # 기타 경기도 시·군
+    "uijeongbu": {"name": "의정부시", "dongs": ["의정부동", "호원동", "가능동", "녹양동", "신곡동", "송산동"]},
+    "gwangmyeong": {"name": "광명시", "dongs": ["광명동", "철산동", "하안동", "소하동"]},
+    "pyeongtaek": {"name": "평택시", "dongs": ["비전동", "서정동", "송탄동", "팽성읍", "안중읍"]},
+    "dongducheon": {"name": "동두천시", "dongs": ["생연동", "보산동", "불현동", "상패동"]},
+    "gwacheon": {"name": "과천시", "dongs": ["중앙동", "갈현동", "문원동", "별양동"]},
+    "guri": {"name": "구리시", "dongs": ["갈매동", "동구동", "인창동", "수택동"]},
+    "namyangju": {"name": "남양주시", "dongs": ["와부읍", "진접읍", "화도읍", "오남읍", "다산동"]},
+    "osan": {"name": "오산시", "dongs": ["중앙동", "서동", "세마동", "초평동", "대원동"]},
+    "siheung": {"name": "시흥시", "dongs": ["신천동", "대야동", "은행동", "정왕동", "배곧동"]},
+    "gunpo": {"name": "군포시", "dongs": ["군포동", "산본동", "금정동", "대야동"]},
+    "uiwang": {"name": "의왕시", "dongs": ["고천동", "부곡동", "내손동", "청계동"]},
+    "hanam": {"name": "하남시", "dongs": ["천현동", "신장동", "풍산동", "미사동", "위례동"]},
+    "paju": {"name": "파주시", "dongs": ["금촌동", "교하동", "운정동", "문산읍"]},
+    "icheon": {"name": "이천시", "dongs": ["증포동", "창전동", "중리동", "부발읍"]},
+    "anseong": {"name": "안성시", "dongs": ["안성동", "공도읍", "죽산면"]},
+    "gimpo": {"name": "김포시", "dongs": ["사우동", "풍무동", "고촌읍", "통진읍", "장기동", "구래동"]},
+    "hwaseong": {"name": "화성시", "dongs": ["진안동", "병점동", "반월동", "동탄동", "봉담읍"]},
+    "gwangju-gg": {"name": "광주시", "dongs": ["경안동", "송정동", "광남동", "오포읍"]},
+    "yangju": {"name": "양주시", "dongs": ["회천동", "양주동", "옥정동"]},
+    "pocheon": {"name": "포천시", "dongs": ["포천동", "소흘읍", "선단동"]},
+    "yeoju": {"name": "여주시", "dongs": ["여흥동", "중앙동", "오학동"]},
+    "yeoncheon": {"name": "연천군", "dongs": ["연천읍", "전곡읍"]},
+    "gapyeong": {"name": "가평군", "dongs": ["가평읍", "설악면", "청평면"]},
+    "yangpyeong": {"name": "양평군", "dongs": ["양평읍", "강상면", "용문면"]}
 }
 
 incheon_regions = {
@@ -77,7 +125,9 @@ incheon_regions = {
     "bupyeong": {"name": "부평구", "dongs": ["부평동", "산곡동", "청천동", "갈산동", "삼산동", "부개동"]},
     "gyeyang": {"name": "계양구", "dongs": ["효성동", "작전동", "계산동", "임학동"]},
     "seohae": {"name": "서해구", "dongs": ["가좌동", "석남동", "신현동", "가정동", "연희동"]},
-    "geomdan": {"name": "검단동", "dongs": ["마전동", "당하동", "원당동", "불로동", "검암동", "아라동"]}
+    "geomdan": {"name": "검단동", "dongs": ["마전동", "당하동", "원당동", "불로동", "검암동", "아라동"]},
+    "ganghwa": {"name": "강화군", "dongs": ["강화읍", "선원면", "길상면"]},
+    "ongjin": {"name": "옹진군", "dongs": ["북도면", "연평면", "백령면"]}
 }
 
 all_regions_data = {
@@ -86,7 +136,7 @@ all_regions_data = {
     "incheon": {"name": "인천", "districts": incheon_regions}
 }
 
-# 5. HTML 생성 함수
+# 5. 회피형 전문 SEO 템플릿 생성 함수
 def get_evasion_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
@@ -95,20 +145,27 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
     if sub_links:
         links_box = ""
         for name, url in sub_links.items():
-            links_box += f'<a href="{url}" style="display:inline-block; margin:5px; padding:8px 12px; background:#1e1e24; color:#f59e0b; border-radius:8px; text-decoration:none; font-size:13px;">{name}</a> '
-        sub_links_html = f'<div style="margin:20px 0;"><h3>하위 지역 선택</h3>{links_box}</div>'
+            links_box += f'<a href="{url}" style="display:inline-block; margin:4px; padding:6px 12px; background:#1e1e24; color:#ff6b35; border:1px solid rgba(255,107,53,0.3); border-radius:6px; text-decoration:none; font-size:12px;">{name}</a> '
+        sub_links_html = f'''
+        <div style="margin:25px 0; background:#16161a; padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+            <h3 style="color:#ff6b35; font-size:15px; margin-bottom:12px;">🔍 {area_title} 하위 세부 지역 선택</h3>
+            <div>{links_box}</div>
+        </div>'''
 
     partners_html = ""
     for shop in PARTNER_SHOPS:
         partners_html += f"""
-        <div style="background:#18181c; padding:20px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.05);">
-            <h3 style="color:#f59e0b; margin:0 0 5px;">{shop['name']}</h3>
-            <p style="color:#bbb; font-size:13px; margin:0 0 10px;">{shop['desc']}</p>
-            <a href="tel:{shop['tel']}" style="background:#f59e0b; color:#000; padding:8px 16px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:12px; display:inline-block;">📞 예약 전화: {shop['tel']}</a>
+        <div style="background:#18181c; padding:20px; border-radius:12px; margin-bottom:15px; border-left:4px solid #ff6b35; border-top:1px solid rgba(255,255,255,0.05); border-right:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h4 style="color:#fff; font-size:16px; margin:0;">{shop['name']}</h4>
+                <span style="background:rgba(255,107,53,0.15); color:#ff6b35; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">프리미엄 파트너</span>
+            </div>
+            <p style="color:#9ca3af; font-size:13px; margin:0 0 12px;">{shop['desc']} - {area_title} 전역 신속 방문</p>
+            <a href="tel:{shop['tel']}" style="background:#ff6b35; color:#fff; padding:8px 16px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:12px; display:inline-block;">📞 실시간 예약 전화: {shop['tel']}</a>
         </div>"""
 
-    page_title = f"{area_title} {kw1} 및 {kw2} 안내 - 유레스트"
-    page_desc = f"{area_title} 전문 {kw1}, {kw2}, {kw3} 서비스! 선입금 없는 100% 현장 결제로 안전하고 편안한 웰니스 피로회복을 누려보세요."
+    page_title = f"{area_title} {kw1} 및 {kw2} 전문 안내 센터"
+    page_desc = f"{area_title} 전 지역 24시 방문 가능한 {kw1}, {kw2}, {kw3} 서비스. 철저한 1:1 맞춤 케어와 100% 현장 결제 안심 시스템."
 
     return f"""<!DOCTYPE html>
 <html lang="ko">
@@ -119,31 +176,41 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
     <meta name="description" content="{page_desc}">
     <link rel="stylesheet" href="{prefix}styles.css">
 </head>
-<body style="background:#08080a; color:#fff; font-family:sans-serif; margin:0; padding:20px;">
-    <div style="max-width:800px; margin:0 auto; background:#121216; padding:30px; border-radius:20px; border:1px solid rgba(245,158,11,0.3);">
-        <nav style="margin-bottom:20px;"><a href="{prefix}index.html" style="color:#f59e0b; text-decoration:none; font-weight:bold;">← 메인으로</a></nav>
-        <span style="background:rgba(245,158,11,0.1); color:#f59e0b; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold;">📍 수도권 웰니스 회피형 케어 가이드</span>
+<body style="background:#0a0a0f; color:#e5e7eb; font-family:'Noto Sans KR', sans-serif; margin:0; padding:20px; line-height:1.6;">
+    <div style="max-width:850px; margin:30px auto; background:#121218; padding:35px; border-radius:20px; border:1px solid rgba(255,107,53,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
-        <h1 style="font-size:26px; margin-top:15px; color:#fff;">{area_title} {kw1} & {kw2} 안내</h1>
-        <p style="color:#bbb; line-height:1.6; font-size:14px;">
-            {area_title} 주민 여러분을 위한 24시 프리미엄 홈케어 서비스입니다. 
-            숙련된 전문 테라피스트가 직접 방문하여 {kw1}, {kw2}, {kw3} 등 고객님 컨디션에 맞춘 1:1 맞춤형 힐링 프로그램을 선사합니다.
-        </p>
+        <nav style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <a href="{prefix}../../index.html" style="color:#ff6b35; text-decoration:none; font-weight:bold; font-size:14px;">← 오프모드 메인으로 돌아가기</a>
+            <span style="background:rgba(255,107,53,0.1); color:#ff6b35; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold;">✨ SEO 최적화 회피형 특별 페이지</span>
+        </nav>
+        
+        <div style="border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px; margin-bottom:25px;">
+            <h1 style="font-size:24px; color:#fff; margin:0 0 10px; font-weight:700;">{area_title} <span style="color:#ff6b35;">{kw1}</span> & <span style="color:#ff6b35;">{kw2}</span> 가이드</h1>
+            <p style="color:#9ca3af; font-size:14px; margin:0;">
+                바쁜 일상에 지친 몸과 마음을 위한 {area_title} 맞춤형 프리미엄 홈케어입니다. 
+                전문 테라피스트가 고객님 계신 곳으로 직접 방문하여 {kw1}, {kw2}, {kw3} 등 최고급 힐링 프로그램을 제공해 드립니다.
+            </p>
+        </div>
         
         {sub_links_html}
 
         <div style="margin-top:30px;">
-            <h2 style="font-size:18px; color:#fff; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">🏆 추천 제휴 센터</h2>
+            <h2 style="font-size:17px; color:#fff; margin-bottom:15px; border-left:3px solid #ff6b35; padding-left:10px;">🏆 {area_title} 공식 인증 제휴 센터</h2>
             {partners_html}
+        </div>
+
+        <div style="margin-top:40px; text-align:center; color:#6b7280; font-size:12px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
+            <p>본 페이지는 검색엔진 최적화를 위해 제공되는 {area_title} 지역 맞춤형 정보 안내 페이지입니다.</p>
+            <p>&copy; 2026 오프모드건마사랑 All rights reserved.</p>
         </div>
     </div>
 </body>
 </html>
 """
 
-# 6. 실행 함수
+# 6. 실행 함수 (전체 지역 대량 빌드)
 def generate_evasion_sites():
-    print("🚀 [회피형 키워드 전용] 독립 빌드 시작...")
+    print("🚀 [수도권 전 지역 완벽 포함] 구·동 3단계 계층 구조 빌드 시작...")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     page_count = 0
@@ -151,16 +218,11 @@ def generate_evasion_sites():
         reg_dir = os.path.join(OUTPUT_DIR, reg_key)
         os.makedirs(reg_dir, exist_ok=True)
         
-        dist_links = {d_val["name"]: f"./{d_key}/" for d_key, d_val in reg_val["districts"].items()}
-        with open(os.path.join(reg_dir, "index.html"), "w", encoding="utf-8") as f:
-            f.write(get_evasion_html_template(f"{reg_val['name']} 전지역", 1, sub_links=dist_links))
-        page_count += 1
-
         for dist_key, dist_val in reg_val["districts"].items():
             dist_dir = os.path.join(reg_dir, dist_key)
             os.makedirs(dist_dir, exist_ok=True)
             
-            dong_links = {dong: f"./{dong}/" for dong in dist_val["dongs"]}
+            dong_links = {dong: f"./{dong}/index.html" for dong in dist_val["dongs"]}
             with open(os.path.join(dist_dir, "index.html"), "w", encoding="utf-8") as f:
                 f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']}", 2, sub_links=dong_links))
             page_count += 1
@@ -173,7 +235,7 @@ def generate_evasion_sites():
                     f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 3))
                 page_count += 1
 
-    print(f"✨ 총 {page_count}개의 구·동 회피형 페이지가 '{OUTPUT_DIR}' 폴더에 성공적으로 생성되었습니다!")
+    print(f"✨ 총 {page_count}개의 수도권 전 지역 회피형 페이지가 '{OUTPUT_DIR}' 폴더에 성공적으로 생성되었습니다!")
 
 if __name__ == "__main__":
     generate_evasion_sites()
