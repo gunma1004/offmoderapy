@@ -1,20 +1,3 @@
-import os
-from datetime import datetime
-
-# 1. 사이트 기본 설정
-DOMAIN = "https://offmoderapy.netlify.app"
-NAVER_VERIFICATION = "a0e02e4f2dcaf270179e713519c690fbe449e8c5"
-
-# 2. 제휴 업체 정보 데이터
-PARTNER_SHOPS = [
-    {"name": "퀸즈홈테라피", "tel": "0507-1280-3296", "desc": "프리미엄 맞춤 홈케어 및 스웨디시 전문"},
-    {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
-    {"name": "한국미인테라피", "tel": "0507-1280-3201", "desc": "편안하고 아늑한 1:1 맞춤 케어"},
-    {"name": "오늘밤테라피", "tel": "0507-1280-3199", "desc": "24시 신속 방문 및 피로 회복 전문"},
-    {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
-]
-
-# 3. 메인 인덱스 템플릿 (CSS 중괄호 충돌 방지형)
 INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -26,7 +9,6 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
     <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
     <meta name="robots" content="index,follow">
     
-    <!-- Open Graph (SNS 및 검색엔진 미리보기 최적화) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
     <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
@@ -76,14 +58,16 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
         .tel { font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }
         .btn-call { background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
 
-        /* 회피형 허브 섹션 스타일 */
-        .evasion-hub { background: #15151f; color: #fff; }
-        .evasion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-        .evasion-box { background: #1f1f2e; padding: 25px; border-radius: 16px; border: 1px solid rgba(255,107,53,0.3); }
-        .evasion-box h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.2rem; }
-        .evasion-links { display: flex; flex-wrap: wrap; gap: 8px; }
-        .evasion-links a { background: #2a2a3d; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; }
-        .evasion-links a:hover { background: var(--primary); }
+        /* 완벽하게 구분된 권역별/구별 허브 섹션 스타일 */
+        .evasion-hub { background: #121218; color: #fff; padding: 80px 0; }
+        .region-group { background: #181822; border: 1px solid rgba(255,107,53,0.2); border-radius: 16px; padding: 30px; margin-bottom: 30px; }
+        .region-group h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid rgba(255,107,53,0.3); padding-bottom: 10px; }
+        .district-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .district-card { background: #1f1f2e; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .district-card h4 { color: #fff; font-size: 1.05rem; margin-bottom: 10px; }
+        .link-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .link-list a { background: #2a2a3d; color: #d1d5db; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; transition: all 0.2s; }
+        .link-list a:hover { background: var(--primary); color: #fff; }
 
         footer { background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }
         footer strong { color: #aaa; }
@@ -179,48 +163,107 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
     </section>
 
-    <!-- 🌟 회피형 키워드 지역 허브 섹션 -->
-    <section class="section evasion-hub" id="evasion-regions">
+    <!-- 🌟 서울·경기·인천 모든 구·동별 허브 링크 섹션 -->
+    <section class="evasion-hub" id="evasion-regions">
         <div class="container">
             <div class="section-title">
                 <h2 style="color: #fff;">수도권 출장 웰니스 & 아로마 마사지 지역별 안내</h2>
-                <p style="color: #b5b5c6;">서울·경기·인천 구·동별 실시간 1:1 안심 방문 제휴 정보</p>
+                <p style="color: #b5b5c6;">서울·경기·인천 모든 구·동 단위 실시간 1:1 안심 방문 제휴 정보</p>
             </div>
             
-            <div class="evasion-grid">
-                <!-- 서울 권역 -->
-                <div class="evasion-box">
-                    <h3>🏙️ 서울특별시 출장 케어</h3>
-                    <div class="evasion-links">
-                        <a href="./dist_evasion/seoul/gangnam/index.html">강남구 출장마사지</a>
-                        <a href="./dist_evasion/seoul/mapo/index.html">마포구 출장아로마</a>
-                        <a href="./dist_evasion/seoul/seocho/index.html">서초구 출장스웨디시</a>
-                        <a href="./dist_evasion/seoul/songpa/index.html">송파구 산후전후마사지</a>
+            <!-- 서울특별시 권역 -->
+            <div class="region-group">
+                <h3>🏙️ 서울특별시 전지역 안내</h3>
+                <div class="district-grid">
+                    <div class="district-card">
+                        <h4><a href="./evasion/seoul/gangnam/index.html" style="color:#ff6b35; text-decoration:none;">강남구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/seoul/gangnam/역삼동/index.html">역삼동</a><a href="./evasion/seoul/gangnam/논현동/index.html">논현동</a><a href="./evasion/seoul/gangnam/청담동/index.html">청담동</a><a href="./evasion/seoul/gangnam/삼성동/index.html">삼성동</a><a href="./evasion/seoul/gangnam/대치동/index.html">대치동</a><a href="./evasion/seoul/gangnam/신사동/index.html">신사동</a><a href="./evasion/seoul/gangnam/도곡동/index.html">도곡동</a><a href="./evasion/seoul/gangnam/개포동/index.html">개포동</a><a href="./evasion/seoul/gangnam/일원동/index.html">일원동</a><a href="./evasion/seoul/gangnam/수서동/index.html">수서동</a>
+                        </div>
                     </div>
-                </div>
-
-                <!-- 경기 권역 -->
-                <div class="evasion-box">
-                    <h3>🏡 경기도 출장 케어</h3>
-                    <div class="evasion-links">
-                        <a href="./dist_evasion/gyeonggi/seongnam-bundang/index.html">성남시 분당구</a>
-                        <a href="./dist_evasion/gyeonggi/suwon-jangan/index.html">수원시 장안구</a>
-                        <a href="./dist_evasion/gyeonggi/goyang-ilsandong/index.html">고양시 일산동구</a>
-                        <a href="./dist_evasion/gyeonggi/yongin-suji/index.html">용인시 수지구</a>
+                    <div class="district-card">
+                        <h4><a href="./evasion/seoul/mapo/index.html" style="color:#ff6b35; text-decoration:none;">마포구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/seoul/mapo/아현동/index.html">아현동</a><a href="./evasion/seoul/mapo/공덕동/index.html">공덕동</a><a href="./evasion/seoul/mapo/도화동/index.html">도화동</a><a href="./evasion/seoul/mapo/용강동/index.html">용강동</a><a href="./evasion/seoul/mapo/대흥동/index.html">대흥동</a><a href="./evasion/seoul/mapo/염리동/index.html">염리동</a><a href="./evasion/seoul/mapo/신수동/index.html">신수동</a><a href="./evasion/seoul/mapo/서교동/index.html">서교동</a><a href="./evasion/seoul/mapo/합정동/index.html">합정동</a><a href="./evasion/seoul/mapo/망원동/index.html">망원동</a><a href="./evasion/seoul/mapo/연남동/index.html">연남동</a><a href="./evasion/seoul/mapo/성산동/index.html">성산동</a><a href="./evasion/seoul/mapo/상암동/index.html">상암동</a>
+                        </div>
                     </div>
-                </div>
-
-                <!-- 인천 권역 -->
-                <div class="evasion-box">
-                    <h3>🌊 인천광역시 출장 케어</h3>
-                    <div class="evasion-links">
-                        <a href="./dist_evasion/incheon/namdong/index.html">남동구 출장마사지</a>
-                        <a href="./dist_evasion/incheon/yeonsu/index.html">연수구 출장아로마</a>
-                        <a href="./dist_evasion/incheon/bupyeong/index.html">부평구 출장타이</a>
-                        <a href="./dist_evasion/incheon/geomdan/index.html">검단구 출장홈케어</a>
+                    <div class="district-card">
+                        <h4><a href="./evasion/seoul/seocho/index.html" style="color:#ff6b35; text-decoration:none;">서초구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/seoul/seocho/서초동/index.html">서초동</a><a href="./evasion/seoul/seocho/반포동/index.html">반포동</a><a href="./evasion/seoul/seocho/방배동/index.html">방배동</a><a href="./evasion/seoul/seocho/잠원동/index.html">잠원동</a><a href="./evasion/seoul/seocho/양재동/index.html">양재동</a><a href="./evasion/seoul/seocho/내곡동/index.html">내곡동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/seoul/songpa/index.html" style="color:#ff6b35; text-decoration:none;">송파구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/seoul/songpa/잠실동/index.html">잠실동</a><a href="./evasion/seoul/songpa/신천동/index.html">신천동</a><a href="./evasion/seoul/songpa/풍납동/index.html">풍납동</a><a href="./evasion/seoul/songpa/송파동/index.html">송파동</a><a href="./evasion/seoul/songpa/석촌동/index.html">석촌동</a><a href="./evasion/seoul/songpa/삼전동/index.html">삼전동</a><a href="./evasion/seoul/songpa/가락동/index.html">가락동</a><a href="./evasion/seoul/songpa/문정동/index.html">문정동</a><a href="./evasion/seoul/songpa/방이동/index.html">방이동</a><a href="./evasion/seoul/songpa/오금동/index.html">오금동</a>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- 경기도 권역 -->
+            <div class="region-group">
+                <h3>🏡 경기도 전지역 안내</h3>
+                <div class="district-grid">
+                    <div class="district-card">
+                        <h4><a href="./evasion/gyeonggi/seongnam-bundang/index.html" style="color:#ff6b35; text-decoration:none;">성남시 분당구</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/gyeonggi/seongnam-bundang/분당동/index.html">분당동</a><a href="./evasion/gyeonggi/seongnam-bundang/수내동/index.html">수내동</a><a href="./evasion/gyeonggi/seongnam-bundang/정자동/index.html">정자동</a><a href="./evasion/gyeonggi/seongnam-bundang/서현동/index.html">서현동</a><a href="./evasion/gyeonggi/seongnam-bundang/이매동/index.html">이매동</a><a href="./evasion/gyeonggi/seongnam-bundang/야탑동/index.html">야탑동</a><a href="./evasion/gyeonggi/seongnam-bundang/판교동/index.html">판교동</a><a href="./evasion/gyeonggi/seongnam-bundang/삼평동/index.html">삼평동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/gyeonggi/suwon-jangan/index.html" style="color:#ff6b35; text-decoration:none;">수원시 장안구</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/gyeonggi/suwon-jangan/파장동/index.html">파장동</a><a href="./evasion/gyeonggi/suwon-jangan/정자동/index.html">정자동</a><a href="./evasion/gyeonggi/suwon-jangan/영화동/index.html">영화동</a><a href="./evasion/gyeonggi/suwon-jangan/송죽동/index.html">송죽동</a><a href="./evasion/gyeonggi/suwon-jangan/조원동/index.html">조원동</a><a href="./evasion/gyeonggi/suwon-jangan/율천동/index.html">율천동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/gyeonggi/goyang-ilsandong/index.html" style="color:#ff6b35; text-decoration:none;">고양시 일산동구</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/gyeonggi/goyang-ilsandong/식사동/index.html">식사동</a><a href="./evasion/gyeonggi/goyang-ilsandong/중산동/index.html">중산동</a><a href="./evasion/gyeonggi/goyang-ilsandong/정발산동/index.html">정발산동</a><a href="./evasion/gyeonggi/goyang-ilsandong/백석동/index.html">백석동</a><a href="./evasion/gyeonggi/goyang-ilsandong/마두동/index.html">마두동</a><a href="./evasion/gyeonggi/goyang-ilsandong/장항동/index.html">장항동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/gyeonggi/yongin-suji/index.html" style="color:#ff6b35; text-decoration:none;">용인시 수지구</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/gyeonggi/yongin-suji/풍덕천동/index.html">풍덕천동</a><a href="./evasion/gyeonggi/yongin-suji/신봉동/index.html">신봉동</a><a href="./evasion/gyeonggi/yongin-suji/죽전동/index.html">죽전동</a><a href="./evasion/gyeonggi/yongin-suji/동천동/index.html">동천동</a><a href="./evasion/gyeonggi/yongin-suji/상현동/index.html">상현동</a><a href="./evasion/gyeonggi/yongin-suji/성복동/index.html">성복동</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 인천광역시 권역 -->
+            <div class="region-group">
+                <h3>🌊 인천광역시 전지역 안내</h3>
+                <div class="district-grid">
+                    <div class="district-card">
+                        <h4><a href="./evasion/incheon/namdong/index.html" style="color:#ff6b35; text-decoration:none;">남동구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/incheon/namdong/구월동/index.html">구월동</a><a href="./evasion/incheon/namdong/간석동/index.html">간석동</a><a href="./evasion/incheon/namdong/만수동/index.html">만수동</a><a href="./evasion/incheon/namdong/서창동/index.html">서창동</a><a href="./evasion/incheon/namdong/논현동/index.html">논현동</a><a href="./evasion/incheon/namdong/고잔동/index.html">고잔동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/incheon/yeonsu/index.html" style="color:#ff6b35; text-decoration:none;">연수구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/incheon/yeonsu/옥련동/index.html">옥련동</a><a href="./evasion/incheon/yeonsu/연수동/index.html">연수동</a><a href="./evasion/incheon/yeonsu/청학동/index.html">청학동</a><a href="./evasion/incheon/yeonsu/동춘동/index.html">동춘동</a><a href="./evasion/incheon/yeonsu/송도동/index.html">송도동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/incheon/bupyeong/index.html" style="color:#ff6b35; text-decoration:none;">부평구 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/incheon/bupyeong/부평동/index.html">부평동</a><a href="./evasion/incheon/bupyeong/산곡동/index.html">산곡동</a><a href="./evasion/incheon/bupyeong/청천동/index.html">청천동</a><a href="./evasion/incheon/bupyeong/갈산동/index.html">갈산동</a><a href="./evasion/incheon/bupyeong/삼산동/index.html">삼산동</a><a href="./evasion/incheon/bupyeong/부개동/index.html">부개동</a>
+                        </div>
+                    </div>
+                    <div class="district-card">
+                        <h4><a href="./evasion/incheon/geomdan/index.html" style="color:#ff6b35; text-decoration:none;">검단동 전역</a></h4>
+                        <div class="link-list">
+                            <a href="./evasion/incheon/geomdan/마전동/index.html">마전동</a><a href="./evasion/incheon/geomdan/당하동/index.html">당하동</a><a href="./evasion/incheon/geomdan/원당동/index.html">원당동</a><a href="./evasion/incheon/geomdan/불로동/index.html">불로동</a><a href="./evasion/incheon/geomdan/검암동/index.html">검암동</a><a href="./evasion/incheon/geomdan/아라동/index.html">아라동</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -234,16 +277,3 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 
 </body>
 </html>"""
-
-# 4. 변수 치환 처리
-final_index_html = INDEX_HTML_TEMPLATE.replace("NAVER_VERIFICATION_PLACEHOLDER", NAVER_VERIFICATION).replace("DOMAIN_PLACEHOLDER", DOMAIN)
-
-# 5. 메인 인덱스 파일 생성 실행부 (dist 폴더 내부에 생성되도록 지정)
-if __name__ == "__main__":
-    output_dir = "dist"  # 🌟 핵심: dist 폴더 안으로 지정
-    os.makedirs(output_dir, exist_ok=True)
-    
-    with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
-        f.write(final_index_html)
-    
-    print("✨ dist/index.html 메인 페이지 생성 및 덮어씌우기 완료!")
