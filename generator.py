@@ -14,14 +14,14 @@ PARTNER_SHOPS = [
     {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
 ]
 
-# 3. 메인 인덱스 템플릿 (f-string과 CSS 중괄호 충돌 방지를 위해 대괄호는 더블 중괄호 {{ }}로 처리됨)
-INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
+# 3. 메인 인덱스 템플릿 (일반 문자열로 선언하여 CSS 충돌 원천 방지)
+INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="naver-site-verification" content="{NAVER_VERIFICATION}" />
+    <meta name="naver-site-verification" content="NAVER_VERIFICATION_PLACEHOLDER" />
     <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
     <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
     <meta name="robots" content="index,follow">
@@ -30,63 +30,63 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
     <meta property="og:type" content="website">
     <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
     <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
-    <meta property="og:url" content="{DOMAIN}/">
+    <meta property="og:url" content="DOMAIN_PLACEHOLDER/">
     <meta property="og:site_name" content="오프모드건마사랑">
 
     <meta name="theme-color" content="#ff6b35">
-    <link rel="canonical" href="{DOMAIN}/">
+    <link rel="canonical" href="DOMAIN_PLACEHOLDER/">
     <link rel="stylesheet" href="./styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        :root {{ --primary: #ff6b35; --text-dark: #1f2430; --text-muted: #5b6472; --bg-section: #fff5f0; }}
-        html {{ scroll-behavior: smooth; }}
-        body {{ font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }}
-        .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #ff6b35; --text-dark: #1f2430; --text-muted: #5b6472; --bg-section: #fff5f0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        .header {{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }}
-        .header-inner {{ display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
-        .logo-text {{ font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }}
-        .logo-text span {{ color: var(--primary); }}
-        .nav {{ display: flex; gap: 24px; align-items: center; }}
-        .nav a {{ color: #fff; text-decoration: none; font-size: 0.95rem; }}
-        .nav-cta {{ background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }}
+        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo-text span { color: var(--primary); }
+        .nav { display: flex; gap: 24px; align-items: center; }
+        .nav a { color: #fff; text-decoration: none; font-size: 0.95rem; }
+        .nav-cta { background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
-        .hero {{ padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }}
-        .hero h1 {{ font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }}
-        .hero h1 span {{ color: var(--primary); }}
-        .hero p {{ font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }}
+        .hero { padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }
+        .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }
 
-        .section {{ padding: 80px 0; }}
-        .section-white {{ background: #fff; }}
-        .section-title {{ text-align: center; margin-bottom: 40px; }}
-        .section-title h2 {{ font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }}
-        .section-title p {{ color: var(--text-muted); }}
+        .section { padding: 80px 0; }
+        .section-white { background: #fff; }
+        .section-title { text-align: center; margin-bottom: 40px; }
+        .section-title h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }
+        .section-title p { color: var(--text-muted); }
 
-        .partner-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }}
-        .card {{ background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }}
-        .card:hover {{ transform: translateY(-3px); }}
-        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
-        .card h3 {{ font-size: 1.15rem; color: var(--text-dark); font-weight: 700; }}
-        .badge {{ background: #fff5f0; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }}
-        .card p {{ color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }}
-        .card-footer {{ display: flex; justify-content: space-between; align-items: center; }}
-        .tel {{ font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }}
-        .btn-call {{ background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }}
+        .partner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .card h3 { font-size: 1.15rem; color: var(--text-dark); font-weight: 700; }
+        .badge { background: #fff5f0; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; }
+        .tel { font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }
+        .btn-call { background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
 
         /* 회피형 허브 섹션 스타일 */
-        .evasion-hub {{ background: #15151f; color: #fff; }}
-        .evasion-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }}
-        .evasion-box {{ background: #1f1f2e; padding: 25px; border-radius: 16px; border: 1px solid rgba(255,107,53,0.3); }}
-        .evasion-box h3 {{ color: var(--primary); margin-bottom: 15px; font-size: 1.2rem; }}
-        .evasion-links {{ display: flex; flex-wrap: wrap; gap: 8px; }}
-        .evasion-links a {{ background: #2a2a3d; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; }}
-        .evasion-links a:hover {{ background: var(--primary); }}
+        .evasion-hub { background: #15151f; color: #fff; }
+        .evasion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .evasion-box { background: #1f1f2e; padding: 25px; border-radius: 16px; border: 1px solid rgba(255,107,53,0.3); }
+        .evasion-box h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.2rem; }
+        .evasion-links { display: flex; flex-wrap: wrap; gap: 8px; }
+        .evasion-links a { background: #2a2a3d; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; }
+        .evasion-links a:hover { background: var(--primary); }
 
-        footer {{ background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }}
-        footer strong {{ color: #aaa; }}
+        footer { background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }
+        footer strong { color: #aaa; }
     </style>
 </head>
 <body>
@@ -234,3 +234,6 @@ INDEX_HTML_TEMPLATE = f"""<!DOCTYPE html>
 
 </body>
 </html>"""
+
+# 메인 인덱스 파일 생성 시 데이터 치환 로직
+final_index_html = INDEX_HTML_TEMPLATE.replace("NAVER_VERIFICATION_PLACEHOLDER", NAVER_VERIFICATION).replace("DOMAIN_PLACEHOLDER", DOMAIN)
