@@ -5,7 +5,7 @@ from datetime import datetime
 DOMAIN = "https://offmoderapy.netlify.app"
 NAVER_VERIFICATION = "a0e02e4f2dcaf270179e713519c690fbe449e8c5"
 
-# 2. 제휴 업체 정보 데이터 (5개 업체)
+# 2. 제휴 업체 정보 데이터
 PARTNER_SHOPS = [
     {"name": "퀸즈홈테라피", "tel": "0507-1280-3296", "desc": "프리미엄 맞춤 홈케어 및 스웨디시 전문"},
     {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
@@ -14,7 +14,7 @@ PARTNER_SHOPS = [
     {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
 ]
 
-# 3. 메인 인덱스 템플릿 (일반 문자열로 선언하여 CSS 충돌 원천 방지)
+# 3. 메인 인덱스 템플릿 (CSS 중괄호 충돌 방지형)
 INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -235,5 +235,15 @@ INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
 </body>
 </html>"""
 
-# 메인 인덱스 파일 생성 시 데이터 치환 로직
+# 4. 변수 치환 처리
 final_index_html = INDEX_HTML_TEMPLATE.replace("NAVER_VERIFICATION_PLACEHOLDER", NAVER_VERIFICATION).replace("DOMAIN_PLACEHOLDER", DOMAIN)
+
+# 5. 메인 인덱스 파일 생성 실행부 (dist 폴더 내부에 생성되도록 지정)
+if __name__ == "__main__":
+    output_dir = "dist"  # 🌟 핵심: dist 폴더 안으로 지정
+    os.makedirs(output_dir, exist_ok=True)
+    
+    with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(final_index_html)
+    
+    print("✨ dist/index.html 메인 페이지 생성 및 덮어씌우기 완료!")
