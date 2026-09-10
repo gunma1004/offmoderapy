@@ -3,6 +3,7 @@ import random
 
 # 1. 고정 출력 경로 (dist/evasion)
 OUTPUT_DIR = "dist/evasion"
+DOMAIN = "https://offmoderapy.netlify.app"
 
 # 2. 30여 가지 출장 회피형 마사지 및 테라피 키워드 풀
 evasion_keywords = [
@@ -55,41 +56,26 @@ seoul_regions = {
 }
 
 gyeonggi_regions = {
-    # 수원시 (4개 구)
     "suwon-jangan": {"name": "수원시 장안구", "dongs": ["파장동", "정자동", "영화동", "송죽동", "조원동", "율천동"]},
     "suwon-gwonseon": {"name": "수원시 권선구", "dongs": ["세류동", "권선동", "곡선동", "평동", "호매실동", "서둔동"]},
     "suwon-paldal": {"name": "수원시 팔달구", "dongs": ["매교동", "매산동", "고등동", "화서동", "지동", "우만동", "인계동"]},
     "suwon-yeongtong": {"name": "수원시 영통구", "dongs": ["매탄동", "원천동", "영통동", "망포동", "광교동"]},
-    
-    # 성남시 (3개 구)
     "seongnam-sujeong": {"name": "성남시 수정구", "dongs": ["신흥동", "태평동", "수진동", "단대동", "산성동", "상적동"]},
     "seongnam-jungwon": {"name": "성남시 중원구", "dongs": ["성남동", "중앙동", "금광동", "은행동", "상대원동", "하대원동"]},
     "seongnam-bundang": {"name": "성남시 분당구", "dongs": ["분당동", "수내동", "정자동", "서현동", "이매동", "야탑동", "판교동", "삼평동"]},
-    
-    # 고양시 (3개 구)
     "goyang-deokyang": {"name": "고양시 덕양구", "dongs": ["원신동", "효자동", "화정동", "행신동", "성사동", "고양동", "능곡동"]},
     "goyang-ilsandong": {"name": "고양시 일산동구", "dongs": ["식사동", "중산동", "정발산동", "백석동", "마두동", "장항동"]},
     "goyang-ilsanseo": {"name": "고양시 일산서구", "dongs": ["일산동", "탄현동", "주엽동", "대화동", "덕이동"]},
-    
-    # 용인시 (3개 구)
     "yongin-cheoin": {"name": "용인시 처인구", "dongs": ["역삼동", "유림동", "동부동", "포곡읍", "모현읍", "이동읍"]},
     "yongin-giheung": {"name": "용인시 기흥구", "dongs": ["신갈동", "구성동", "마북동", "동백동", "보정동", "기흥동"]},
     "yongin-suji": {"name": "용인시 수지구", "dongs": ["풍덕천동", "신봉동", "죽전동", "동천동", "상현동", "성복동"]},
-    
-    # 부천시 (3개 구)
     "bucheon-wonmi": {"name": "부천시 원미구", "dongs": ["원미동", "심곡동", "춘의동", "도당동", "중동", "상동"]},
     "bucheon-sosa": {"name": "부천시 소사구", "dongs": ["소사본동", "범박동", "역곡동", "괴안동", "송내동"]},
     "bucheon-ojeong": {"name": "부천시 오정구", "dongs": ["오정동", "고강동", "원종동", "성곡동"]},
-
-    # 안양시 (2개 구)
     "anyang-manan": {"name": "안양시 만안구", "dongs": ["안양동", "석수동", "박달동"]},
     "anyang-dongan": {"name": "안양시 동안구", "dongs": ["비산동", "관양동", "평촌동", "호계동"]},
-
-    # 안산시 (2개 구)
     "ansan-sangrok": {"name": "안산시 상록구", "dongs": ["일동", "이동", "사동", "본오동", "반월동"]},
     "ansan-danwon": {"name": "안산시 단원구", "dongs": ["고잔동", "와동", "원곡동", "초지동", "선부동"]},
-
-    # 기타 경기도 시·군
     "uijeongbu": {"name": "의정부시", "dongs": ["의정부동", "호원동", "가능동", "녹양동", "신곡동", "송산동"]},
     "gwangmyeong": {"name": "광명시", "dongs": ["광명동", "철산동", "하안동", "소하동"]},
     "pyeongtaek": {"name": "평택시", "dongs": ["비전동", "서정동", "송탄동", "팽성읍", "안중읍"]},
@@ -136,7 +122,7 @@ all_regions_data = {
     "incheon": {"name": "인천", "districts": incheon_regions}
 }
 
-# 5. 회피형 전문 SEO 템플릿 생성 함수
+# 5. 회피형 전문 SEO 템플릿 생성 함수 (Open Graph 태그 포함)
 def get_evasion_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
@@ -174,6 +160,14 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{page_title}</title>
     <meta name="description" content="{page_desc}">
+    
+    <!-- Open Graph (SNS 및 검색엔진 미리보기 최적화) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{page_title}">
+    <meta property="og:description" content="{page_desc}">
+    <meta property="og:url" content="{DOMAIN}/">
+    <meta property="og:site_name" content="오프모드건마사랑">
+
     <link rel="stylesheet" href="{prefix}styles.css">
 </head>
 <body style="background:#0a0a0f; color:#e5e7eb; font-family:'Noto Sans KR', sans-serif; margin:0; padding:20px; line-height:1.6;">
