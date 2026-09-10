@@ -1,279 +1,158 @@
-INDEX_HTML_TEMPLATE = """<!DOCTYPE html>
+import os
+import random
+
+# 1. 고정 출력 경로 (메인 페이지의 ./evasion/... 링크와 완벽 일치)
+OUTPUT_DIR = "dist/evasion"
+
+# 2. 30여 가지 출장 회피형 마사지 및 테라피 키워드 풀
+evasion_keywords = [
+    "출장 웰니스 마사지", "출장 아로마 마사지", "출장 산후전후 마사지", "출장 스웨디시 마사지",
+    "출장 타이 마사지", "출장 홈타이 마사지", "출장 림프 순환 마사지", "출장 딥티슈 마사지",
+    "출장 스포츠 마사지", "출장 감성 마사지", "출장 경락 마사지", "출장 족욕 마사지",
+    "출장 스톤 마사지", "출장 산전산후 테라피 마사지", "출장 통증완화 마사지", "출장 전신오일 마사지",
+    "출장 디톡스 마사지", "출장 파워트리 마사지", "출장 산후조리 마사지", "출장 피로회복 마사지",
+    "출장 리프레시 마사지", "출장 순환마사지", "출장 스페셜 마사지", "출장 체형관리 마사지",
+    "출장 맞춤 마사지", "출장 스킨케어 마사지", "출장 건식 마사지", "출장 오일 마사지",
+    "출장 전신 마사지", "출장 힐링 마사지"
+]
+
+# 3. 제휴 업체 정보 데이터
+PARTNER_SHOPS = [
+    {"name": "퀸즈홈테라피", "tel": "0507-1280-3296", "desc": "프리미엄 맞춤 홈케어 및 스웨디시 전문"},
+    {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
+    {"name": "한국미인테라피", "tel": "0507-1280-3201", "desc": "편안하고 아늑한 1:1 맞춤 케어"},
+    {"name": "오늘밤테라피", "tel": "0507-1280-3199", "desc": "24시 신속 방문 및 피로 회복 전문"},
+    {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
+]
+
+# 4. 서울·경기·인천 전체 지역 및 구·동 데이터
+seoul_regions = {
+    "gangnam": {"name": "강남구", "dongs": ["역삼동", "논현동", "청담동", "삼성동", "대치동", "신사동", "도곡동", "개포동", "일원동", "수서동"]},
+    "mapo": {"name": "마포구", "dongs": ["아현동", "공덕동", "도화동", "용강동", "대흥동", "염리동", "신수동", "서교동", "합정동", "망원동", "연남동", "성산동", "상암동"]},
+    "seocho": {"name": "서초구", "dongs": ["서초동", "반포동", "방배동", "잠원동", "양재동", "내곡동"]},
+    "songpa": {"name": "송파구", "dongs": ["잠실동", "신천동", "풍납동", "송파동", "석촌동", "삼전동", "가락동", "문정동", "방이동", "오금동"]}
+}
+
+gyeonggi_regions = {
+    "seongnam-bundang": {"name": "성남시 분당구", "dongs": ["분당동", "수내동", "정자동", "서현동", "이매동", "야탑동", "판교동", "삼평동"]},
+    "suwon-jangan": {"name": "수원시 장안구", "dongs": ["파장동", "정자동", "영화동", "송죽동", "조원동", "율천동"]},
+    "goyang-ilsandong": {"name": "고양시 일산동구", "dongs": ["식사동", "중산동", "정발산동", "백석동", "마두동", "장항동"]},
+    "yongin-suji": {"name": "용인시 수지구", "dongs": ["풍덕천동", "신봉동", "죽전동", "동천동", "상현동", "성복동"]}
+}
+
+incheon_regions = {
+    "namdong": {"name": "남동구", "dongs": ["구월동", "간석동", "만수동", "서창동", "논현동", "고잔동"]},
+    "yeonsu": {"name": "연수구", "dongs": ["옥련동", "연수동", "청학동", "동춘동", "송도동"]},
+    "bupyeong": {"name": "부평구", "dongs": ["부평동", "산곡동", "청천동", "갈산동", "삼산동", "부개동"]},
+    "geomdan": {"name": "검단동", "dongs": ["마전동", "당하동", "원당동", "불로동", "검암동", "아라동"]}
+}
+
+all_regions_data = {
+    "seoul": {"name": "서울", "districts": seoul_regions},
+    "gyeonggi": {"name": "경기", "districts": gyeonggi_regions},
+    "incheon": {"name": "인천", "districts": incheon_regions}
+}
+
+# 5. 회피형 전문 SEO 템플릿 생성 함수
+def get_evasion_html_template(area_title, path_depth, sub_links=None):
+    prefix = "../" * path_depth
+    kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
+    
+    sub_links_html = ""
+    if sub_links:
+        links_box = ""
+        for name, url in sub_links.items():
+            links_box += f'<a href="{url}" style="display:inline-block; margin:4px; padding:6px 12px; background:#1e1e24; color:#ff6b35; border:1px solid rgba(255,107,53,0.3); border-radius:6px; text-decoration:none; font-size:12px;">{name}</a> '
+        sub_links_html = f'''
+        <div style="margin:25px 0; background:#16161a; padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+            <h3 style="color:#ff6b35; font-size:15px; margin-bottom:12px;">🔍 {area_title} 하위 세부 지역 선택</h3>
+            <div>{links_box}</div>
+        </div>'''
+
+    partners_html = ""
+    for shop in PARTNER_SHOPS:
+        partners_html += f"""
+        <div style="background:#18181c; padding:20px; border-radius:12px; margin-bottom:15px; border-left:4px solid #ff6b35; border-top:1px solid rgba(255,255,255,0.05); border-right:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h4 style="color:#fff; font-size:16px; margin:0;">{shop['name']}</h4>
+                <span style="background:rgba(255,107,53,0.15); color:#ff6b35; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">프리미엄 파트너</span>
+            </div>
+            <p style="color:#9ca3af; font-size:13px; margin:0 0 12px;">{shop['desc']} - {area_title} 전역 신속 방문</p>
+            <a href="tel:{shop['tel']}" style="background:#ff6b35; color:#fff; padding:8px 16px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:12px; display:inline-block;">📞 실시간 예약 전화: {shop['tel']}</a>
+        </div>"""
+
+    page_title = f"{area_title} {kw1} 및 {kw2} 전문 안내 센터"
+    page_desc = f"{area_title} 전 지역 24시 방문 가능한 {kw1}, {kw2}, {kw3} 서비스. 철저한 1:1 맞춤 케어와 100% 현장 결제 안심 시스템."
+
+    return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="naver-site-verification" content="NAVER_VERIFICATION_PLACEHOLDER" />
-    <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
-    <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
-    <meta name="robots" content="index,follow">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
-    <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
-    <meta property="og:url" content="DOMAIN_PLACEHOLDER/">
-    <meta property="og:site_name" content="오프모드건마사랑">
-
-    <meta name="theme-color" content="#ff6b35">
-    <link rel="canonical" href="DOMAIN_PLACEHOLDER/">
-    <link rel="stylesheet" href="./styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #ff6b35; --text-dark: #1f2430; --text-muted: #5b6472; --bg-section: #fff5f0; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .header-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .logo-text { font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }
-        .logo-text span { color: var(--primary); }
-        .nav { display: flex; gap: 24px; align-items: center; }
-        .nav a { color: #fff; text-decoration: none; font-size: 0.95rem; }
-        .nav-cta { background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
-
-        .hero { padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }
-        .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
-        .hero h1 span { color: var(--primary); }
-        .hero p { font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }
-
-        .section { padding: 80px 0; }
-        .section-white { background: #fff; }
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }
-        .section-title p { color: var(--text-muted); }
-
-        .partner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .card h3 { font-size: 1.15rem; color: var(--text-dark); font-weight: 700; }
-        .badge { background: #fff5f0; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; }
-        .tel { font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }
-        .btn-call { background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
-
-        /* 완벽하게 구분된 권역별/구별 허브 섹션 스타일 */
-        .evasion-hub { background: #121218; color: #fff; padding: 80px 0; }
-        .region-group { background: #181822; border: 1px solid rgba(255,107,53,0.2); border-radius: 16px; padding: 30px; margin-bottom: 30px; }
-        .region-group h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid rgba(255,107,53,0.3); padding-bottom: 10px; }
-        .district-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        .district-card { background: #1f1f2e; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .district-card h4 { color: #fff; font-size: 1.05rem; margin-bottom: 10px; }
-        .link-list { display: flex; flex-wrap: wrap; gap: 6px; }
-        .link-list a { background: #2a2a3d; color: #d1d5db; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; transition: all 0.2s; }
-        .link-list a:hover { background: var(--primary); color: #fff; }
-
-        footer { background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }
-        footer strong { color: #aaa; }
-    </style>
+    <title>{page_title}</title>
+    <meta name="description" content="{page_desc}">
+    <link rel="stylesheet" href="{prefix}styles.css">
 </head>
-<body>
-
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="logo-text">오프모드<span>건마사랑</span></a>
-            <nav class="nav">
-                <a href="#partners">공식제휴샵</a>
-                <a href="#evasion-regions">출장지역안내</a>
-                <a href="tel:050712803344" class="nav-cta">제휴 문의</a>
-            </nav>
+<body style="background:#0a0a0f; color:#e5e7eb; font-family:'Noto Sans KR', sans-serif; margin:0; padding:20px; line-height:1.6;">
+    <div style="max-width:850px; margin:30px auto; background:#121218; padding:35px; border-radius:20px; border:1px solid rgba(255,107,53,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        
+        <nav style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <a href="{prefix}../index.html" style="color:#ff6b35; text-decoration:none; font-weight:bold; font-size:14px;">← 오프모드 메인으로 돌아가기</a>
+            <span style="background:rgba(255,107,53,0.1); color:#ff6b35; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold;">✨ SEO 최적화 회피형 특별 페이지</span>
+        </nav>
+        
+        <div style="border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px; margin-bottom:25px;">
+            <h1 style="font-size:24px; color:#fff; margin:0 0 10px; font-weight:700;">{area_title} <span style="color:#ff6b35;">{kw1}</span> & <span style="color:#ff6b35;">{kw2}</span> 가이드</h1>
+            <p style="color:#9ca3af; font-size:14px; margin:0;">
+                바쁜 일상에 지친 몸과 마음을 위한 {area_title} 맞춤형 프리미엄 홈케어입니다. 
+                전문 테라피스트가 고객님 계신 곳으로 직접 방문하여 {kw1}, {kw2}, {kw3} 등 최고급 힐링 프로그램을 제공해 드립니다.
+            </p>
         </div>
-    </header>
+        
+        {sub_links_html}
 
-    <section class="hero">
-        <div class="container">
-            <div style="margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                <img src="images/banner.jpg" alt="오프모드건마사랑 프리미엄 배너" style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
-            </div>
-            <span style="color: var(--primary); font-size: 0.85rem; letter-spacing: 2px; font-weight: 700; display: inline-block; margin-bottom: 15px;">24H 수도권 프라이빗 힐링 플랫폼</span>
-            <h1>일상의 긴장을 끄고(Off),<br>완벽한 휴식을 켜다 <span>오프모드건마사랑</span></h1>
-            <p>서울·경기·인천 수도권 전 지역 신속 방문 · 100% 후불제 안심 케어 서비스</p>
+        <div style="margin-top:30px;">
+            <h2 style="font-size:17px; color:#fff; margin-bottom:15px; border-left:3px solid #ff6b35; padding-left:10px;">🏆 {area_title} 공식 인증 제휴 센터</h2>
+            {partners_html}
         </div>
-    </section>
 
-    <section class="section section-white" id="partners">
-        <div class="container">
-            <div class="section-title">
-                <h2>공식 제휴 힐링샵 안내</h2>
-                <p>엄선된 전문 관리사의 맞춤형 프리미엄 케어 서비스</p>
-            </div>
-            <div class="partner-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>퀸즈홈테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>프리미엄 맞춤 홈케어 및 스웨디시 전문 관리 프로그램</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3296</span>
-                        <a href="tel:050712803296" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>한국골든테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>정통 힐링 아로마 및 피로 회복 전신 관리 시스템</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3360</span>
-                        <a href="tel:050712803360" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>한국미인테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>편안하고 아늑한 환경에서 진행되는 1:1 맞춤 케어</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3201</span>
-                        <a href="tel:050712803201" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>오늘밤테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>24시 신속 방문 및 일상 속 깊은 피로 회복 전문</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3199</span>
-                        <a href="tel:050712803199" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>주주테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>부드러운 감성 힐링과 전문 테라피 복합 코스</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3197</span>
-                        <a href="tel:050712803197" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-            </div>
+        <div style="margin-top:40px; text-align:center; color:#6b7280; font-size:12px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
+            <p>본 페이지는 검색엔진 최적화를 위해 제공되는 {area_title} 지역 맞춤형 정보 안내 페이지입니다.</p>
+            <p>&copy; 2026 오프모드건마사랑 All rights reserved.</p>
         </div>
-    </section>
-
-    <!-- 🌟 서울·경기·인천 모든 구·동별 허브 링크 섹션 -->
-    <section class="evasion-hub" id="evasion-regions">
-        <div class="container">
-            <div class="section-title">
-                <h2 style="color: #fff;">수도권 출장 웰니스 & 아로마 마사지 지역별 안내</h2>
-                <p style="color: #b5b5c6;">서울·경기·인천 모든 구·동 단위 실시간 1:1 안심 방문 제휴 정보</p>
-            </div>
-            
-            <!-- 서울특별시 권역 -->
-            <div class="region-group">
-                <h3>🏙️ 서울특별시 전지역 안내</h3>
-                <div class="district-grid">
-                    <div class="district-card">
-                        <h4><a href="./evasion/seoul/gangnam/index.html" style="color:#ff6b35; text-decoration:none;">강남구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/seoul/gangnam/역삼동/index.html">역삼동</a><a href="./evasion/seoul/gangnam/논현동/index.html">논현동</a><a href="./evasion/seoul/gangnam/청담동/index.html">청담동</a><a href="./evasion/seoul/gangnam/삼성동/index.html">삼성동</a><a href="./evasion/seoul/gangnam/대치동/index.html">대치동</a><a href="./evasion/seoul/gangnam/신사동/index.html">신사동</a><a href="./evasion/seoul/gangnam/도곡동/index.html">도곡동</a><a href="./evasion/seoul/gangnam/개포동/index.html">개포동</a><a href="./evasion/seoul/gangnam/일원동/index.html">일원동</a><a href="./evasion/seoul/gangnam/수서동/index.html">수서동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/seoul/mapo/index.html" style="color:#ff6b35; text-decoration:none;">마포구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/seoul/mapo/아현동/index.html">아현동</a><a href="./evasion/seoul/mapo/공덕동/index.html">공덕동</a><a href="./evasion/seoul/mapo/도화동/index.html">도화동</a><a href="./evasion/seoul/mapo/용강동/index.html">용강동</a><a href="./evasion/seoul/mapo/대흥동/index.html">대흥동</a><a href="./evasion/seoul/mapo/염리동/index.html">염리동</a><a href="./evasion/seoul/mapo/신수동/index.html">신수동</a><a href="./evasion/seoul/mapo/서교동/index.html">서교동</a><a href="./evasion/seoul/mapo/합정동/index.html">합정동</a><a href="./evasion/seoul/mapo/망원동/index.html">망원동</a><a href="./evasion/seoul/mapo/연남동/index.html">연남동</a><a href="./evasion/seoul/mapo/성산동/index.html">성산동</a><a href="./evasion/seoul/mapo/상암동/index.html">상암동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/seoul/seocho/index.html" style="color:#ff6b35; text-decoration:none;">서초구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/seoul/seocho/서초동/index.html">서초동</a><a href="./evasion/seoul/seocho/반포동/index.html">반포동</a><a href="./evasion/seoul/seocho/방배동/index.html">방배동</a><a href="./evasion/seoul/seocho/잠원동/index.html">잠원동</a><a href="./evasion/seoul/seocho/양재동/index.html">양재동</a><a href="./evasion/seoul/seocho/내곡동/index.html">내곡동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/seoul/songpa/index.html" style="color:#ff6b35; text-decoration:none;">송파구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/seoul/songpa/잠실동/index.html">잠실동</a><a href="./evasion/seoul/songpa/신천동/index.html">신천동</a><a href="./evasion/seoul/songpa/풍납동/index.html">풍납동</a><a href="./evasion/seoul/songpa/송파동/index.html">송파동</a><a href="./evasion/seoul/songpa/석촌동/index.html">석촌동</a><a href="./evasion/seoul/songpa/삼전동/index.html">삼전동</a><a href="./evasion/seoul/songpa/가락동/index.html">가락동</a><a href="./evasion/seoul/songpa/문정동/index.html">문정동</a><a href="./evasion/seoul/songpa/방이동/index.html">방이동</a><a href="./evasion/seoul/songpa/오금동/index.html">오금동</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 경기도 권역 -->
-            <div class="region-group">
-                <h3>🏡 경기도 전지역 안내</h3>
-                <div class="district-grid">
-                    <div class="district-card">
-                        <h4><a href="./evasion/gyeonggi/seongnam-bundang/index.html" style="color:#ff6b35; text-decoration:none;">성남시 분당구</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/gyeonggi/seongnam-bundang/분당동/index.html">분당동</a><a href="./evasion/gyeonggi/seongnam-bundang/수내동/index.html">수내동</a><a href="./evasion/gyeonggi/seongnam-bundang/정자동/index.html">정자동</a><a href="./evasion/gyeonggi/seongnam-bundang/서현동/index.html">서현동</a><a href="./evasion/gyeonggi/seongnam-bundang/이매동/index.html">이매동</a><a href="./evasion/gyeonggi/seongnam-bundang/야탑동/index.html">야탑동</a><a href="./evasion/gyeonggi/seongnam-bundang/판교동/index.html">판교동</a><a href="./evasion/gyeonggi/seongnam-bundang/삼평동/index.html">삼평동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/gyeonggi/suwon-jangan/index.html" style="color:#ff6b35; text-decoration:none;">수원시 장안구</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/gyeonggi/suwon-jangan/파장동/index.html">파장동</a><a href="./evasion/gyeonggi/suwon-jangan/정자동/index.html">정자동</a><a href="./evasion/gyeonggi/suwon-jangan/영화동/index.html">영화동</a><a href="./evasion/gyeonggi/suwon-jangan/송죽동/index.html">송죽동</a><a href="./evasion/gyeonggi/suwon-jangan/조원동/index.html">조원동</a><a href="./evasion/gyeonggi/suwon-jangan/율천동/index.html">율천동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/gyeonggi/goyang-ilsandong/index.html" style="color:#ff6b35; text-decoration:none;">고양시 일산동구</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/gyeonggi/goyang-ilsandong/식사동/index.html">식사동</a><a href="./evasion/gyeonggi/goyang-ilsandong/중산동/index.html">중산동</a><a href="./evasion/gyeonggi/goyang-ilsandong/정발산동/index.html">정발산동</a><a href="./evasion/gyeonggi/goyang-ilsandong/백석동/index.html">백석동</a><a href="./evasion/gyeonggi/goyang-ilsandong/마두동/index.html">마두동</a><a href="./evasion/gyeonggi/goyang-ilsandong/장항동/index.html">장항동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/gyeonggi/yongin-suji/index.html" style="color:#ff6b35; text-decoration:none;">용인시 수지구</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/gyeonggi/yongin-suji/풍덕천동/index.html">풍덕천동</a><a href="./evasion/gyeonggi/yongin-suji/신봉동/index.html">신봉동</a><a href="./evasion/gyeonggi/yongin-suji/죽전동/index.html">죽전동</a><a href="./evasion/gyeonggi/yongin-suji/동천동/index.html">동천동</a><a href="./evasion/gyeonggi/yongin-suji/상현동/index.html">상현동</a><a href="./evasion/gyeonggi/yongin-suji/성복동/index.html">성복동</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 인천광역시 권역 -->
-            <div class="region-group">
-                <h3>🌊 인천광역시 전지역 안내</h3>
-                <div class="district-grid">
-                    <div class="district-card">
-                        <h4><a href="./evasion/incheon/namdong/index.html" style="color:#ff6b35; text-decoration:none;">남동구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/incheon/namdong/구월동/index.html">구월동</a><a href="./evasion/incheon/namdong/간석동/index.html">간석동</a><a href="./evasion/incheon/namdong/만수동/index.html">만수동</a><a href="./evasion/incheon/namdong/서창동/index.html">서창동</a><a href="./evasion/incheon/namdong/논현동/index.html">논현동</a><a href="./evasion/incheon/namdong/고잔동/index.html">고잔동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/incheon/yeonsu/index.html" style="color:#ff6b35; text-decoration:none;">연수구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/incheon/yeonsu/옥련동/index.html">옥련동</a><a href="./evasion/incheon/yeonsu/연수동/index.html">연수동</a><a href="./evasion/incheon/yeonsu/청학동/index.html">청학동</a><a href="./evasion/incheon/yeonsu/동춘동/index.html">동춘동</a><a href="./evasion/incheon/yeonsu/송도동/index.html">송도동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/incheon/bupyeong/index.html" style="color:#ff6b35; text-decoration:none;">부평구 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/incheon/bupyeong/부평동/index.html">부평동</a><a href="./evasion/incheon/bupyeong/산곡동/index.html">산곡동</a><a href="./evasion/incheon/bupyeong/청천동/index.html">청천동</a><a href="./evasion/incheon/bupyeong/갈산동/index.html">갈산동</a><a href="./evasion/incheon/bupyeong/삼산동/index.html">삼산동</a><a href="./evasion/incheon/bupyeong/부개동/index.html">부개동</a>
-                        </div>
-                    </div>
-                    <div class="district-card">
-                        <h4><a href="./evasion/incheon/geomdan/index.html" style="color:#ff6b35; text-decoration:none;">검단동 전역</a></h4>
-                        <div class="link-list">
-                            <a href="./evasion/incheon/geomdan/마전동/index.html">마전동</a><a href="./evasion/incheon/geomdan/당하동/index.html">당하동</a><a href="./evasion/incheon/geomdan/원당동/index.html">원당동</a><a href="./evasion/incheon/geomdan/불로동/index.html">불로동</a><a href="./evasion/incheon/geomdan/검암동/index.html">검암동</a><a href="./evasion/incheon/geomdan/아라동/index.html">아라동</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p><strong>오프모드건마사랑</strong> | 수도권 힐링 정보 플랫폼</p>
-            <p>본 사이트는 제휴 업체의 정보를 안내하는 정보 플랫폼이며 통신판매의 당사자가 아닙니다. 서비스 이용 관련 사항은 각 제휴점에 직접 문의하시기 바랍니다.</p>
-            <p style="margin-top: 20px;">&copy; 2026 오프모드건마사랑 All rights reserved.</p>
-        </div>
-    </footer>
-
+    </div>
 </body>
-</html>"""
+</html>
+"""
+
+# 6. 실행 함수
+def generate_evasion_sites():
+    print("🚀 [회피형 키워드 전용] dist/evasion 폴더로 빌드 시작...")
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    page_count = 0
+    for reg_key, reg_val in all_regions_data.items():
+        reg_dir = os.path.join(OUTPUT_DIR, reg_key)
+        os.makedirs(reg_dir, exist_ok=True)
+        
+        for dist_key, dist_val in reg_val["districts"].items():
+            dist_dir = os.path.join(reg_dir, dist_key)
+            os.makedirs(dist_dir, exist_ok=True)
+            
+            dong_links = {dong: f"./{dong}/index.html" for dong in dist_val["dongs"]}
+            with open(os.path.join(dist_dir, "index.html"), "w", encoding="utf-8") as f:
+                f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']}", 2, sub_links=dong_links))
+            page_count += 1
+
+            for dong in dist_val["dongs"]:
+                dong_dir = os.path.join(dist_dir, dong)
+                os.makedirs(dong_dir, exist_ok=True)
+                
+                with open(os.path.join(dong_dir, "index.html"), "w", encoding="utf-8") as f:
+                    f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 3))
+                page_count += 1
+
+    print(f"✨ 총 {page_count}개의 회피형 페이지가 '{OUTPUT_DIR}' 폴더에 성공적으로 생성되었습니다!")
+
+if __name__ == "__main__":
+    generate_evasion_sites()
