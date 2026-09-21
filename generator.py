@@ -1,7 +1,7 @@
 import os
 import random
 
-# 1. 고정 출력 경로 및 도메인 설정
+# 1. 고정 출력 경로 및 도메인 설정 (루트 디렉토리에 직접 생성)
 OUTPUT_DIR = "."  
 DOMAIN = "https://offmoderapy.netlify.app"
 
@@ -122,7 +122,7 @@ all_regions_data = {
     "incheon": {"name": "인천", "districts": incheon_regions}
 }
 
-# 5. HTML 템플릿 생성 함수 (evasion 경로 반영)
+# 5. HTML 템플릿 생성 함수 (/evasion/ 경로 대응)
 def get_evasion_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
@@ -201,9 +201,9 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
 </html>
 """
 
-# 6. HTML 페이지 빌드 함수 (evasion 폴더 아래로 생성)
+# 6. HTML 페이지 빌드 함수 (루트에 /evasion/ 폴더 생성)
 def generate_evasion_sites():
-    print("🚀 [/evasion/ 구조] 구·동 3단계 계층 구조 빌드 시작...")
+    print("🚀 [/evasion/ 폴더 구조] 구·동 3단계 계층 구조 빌드 시작...")
     evasion_root = os.path.join(OUTPUT_DIR, "evasion")
     os.makedirs(evasion_root, exist_ok=True)
     
@@ -229,29 +229,36 @@ def generate_evasion_sites():
                     f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 3))
                 page_count += 1
 
-    print(f"✨ 총 {page_count}개의 /evasion/ 지역 회피형 페이지가 성공적으로 생성되었습니다!")
+    print(f"✨ 총 {page_count}개의 /evasion/ 페이지가 생성되었습니다!")
 
-# 7. sitemap.xml을 Netlify 배포 폴더(OUTPUT_DIR) 내부에 직접 생성
+# 7. 루트에 sitemap.xml 자동 생성 함수
 def generate_xml_sitemap():
-    print("📄 최상단 루트에 sitemap.xml 자동 생성 중...")
-    sitemap_path = "sitemap.xml"  # 루트 경로 지정
-
+    print("📄 루트 경로에 sitemap.xml 자동 생성 중...")
+    sitemap_path = os.path.join(OUTPUT_DIR, "sitemap.xml")
+    
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-
+    
+    # 1. 메인 홈 URL 추가
     xml_content += f'  <url>\n    <loc>{DOMAIN}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
-
+    
+    # 2. 모든 구·시 및 세부 동 URL을 /evasion/ 경로로 반영
     for reg_key, reg_val in all_regions_data.items():
         for dist_key, dist_val in reg_val["districts"].items():
+            
             dist_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}"
             xml_content += f'  <url>\n    <loc>{dist_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n'
-
+            
             for dong in dist_val["dongs"]:
                 dong_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/{dong}"
                 xml_content += f'  <url>\n    <loc>{dong_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.85</priority>\n  </url>\n'
-
+                
     xml_content += '</urlset>'
-
+    
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write(xml_content)
-    print(f"✨ '{sitemap_path}'가 최상단 루트에 생성되었습니다!")
+    print(f"✨ '{sitemap_path}'가 최상단 루트에 정상 생성되었습니다!")
+
+if __name__ == "__main__":
+    generate_evasion_sites()
+    generate_xml_sitemap()
