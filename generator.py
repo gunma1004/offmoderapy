@@ -233,32 +233,25 @@ def generate_evasion_sites():
 
 # 7. sitemap.xml을 Netlify 배포 폴더(OUTPUT_DIR) 내부에 직접 생성
 def generate_xml_sitemap():
-    print("📄 배포 폴더 내부에 sitemap.xml 자동 생성 중...")
-    
-    # 수정 포인트: OUTPUT_DIR 내부에 sitemap.xml이 생성되도록 경로 설정
-    sitemap_path = os.path.join(OUTPUT_DIR, "sitemap.xml")
-    
+    print("📄 최상단 루트에 sitemap.xml 자동 생성 중...")
+    sitemap_path = "sitemap.xml"  # 루트 경로 지정
+
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    
-    # 1. 메인 홈 URL 추가
+
     xml_content += f'  <url>\n    <loc>{DOMAIN}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
-    
-    # 2. 모든 구·시 및 세부 동 URL을 /evasion/ 경로를 포함하여 sitemap.xml에 반영
+
     for reg_key, reg_val in all_regions_data.items():
         for dist_key, dist_val in reg_val["districts"].items():
-            
-            # 구/시 단위 URL
             dist_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}"
             xml_content += f'  <url>\n    <loc>{dist_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n'
-            
-            # 세부 동 단위 URL
+
             for dong in dist_val["dongs"]:
                 dong_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/{dong}"
                 xml_content += f'  <url>\n    <loc>{dong_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.85</priority>\n  </url>\n'
-                
+
     xml_content += '</urlset>'
-    
+
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write(xml_content)
-    print(f"✨ 배포 경로('{sitemap_path}')에 사이트맵이 성공적으로 생성되었습니다!")
+    print(f"✨ '{sitemap_path}'가 최상단 루트에 생성되었습니다!")
