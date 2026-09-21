@@ -231,10 +231,10 @@ def generate_evasion_sites():
 
     print(f"✨ 총 {page_count}개의 /evasion/ 페이지가 생성되었습니다!")
 
-# 7. 루트에 sitemap.xml 자동 생성 함수
+# 7. sitemap.xml 자동 생성 함수 (주소 끝에 /index.html 명시)
 def generate_xml_sitemap():
-    print("📄 루트 경로에 sitemap.xml 자동 생성 중...")
-    sitemap_path = os.path.join(OUTPUT_DIR, "sitemap.xml")
+    print("📄 /index.html이 포함된 sitemap.xml 자동 생성 중...")
+    sitemap_path = "sitemap.xml"
     
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -242,23 +242,21 @@ def generate_xml_sitemap():
     # 1. 메인 홈 URL 추가
     xml_content += f'  <url>\n    <loc>{DOMAIN}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
     
-    # 2. 모든 구·시 및 세부 동 URL을 /evasion/ 경로로 반영
+    # 2. 모든 구·시 및 세부 동 URL 끝에 /index.html을 붙여서 완벽하게 일치시킴
     for reg_key, reg_val in all_regions_data.items():
         for dist_key, dist_val in reg_val["districts"].items():
             
-            dist_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}"
+            # 구/시 단위 URL
+            dist_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/index.html"
             xml_content += f'  <url>\n    <loc>{dist_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n'
             
+            # 세부 동 단위 URL (아현동/index.html 포함)
             for dong in dist_val["dongs"]:
-                dong_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/{dong}"
+                dong_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/{dong}/index.html"
                 xml_content += f'  <url>\n    <loc>{dong_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.85</priority>\n  </url>\n'
                 
     xml_content += '</urlset>'
     
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write(xml_content)
-    print(f"✨ '{sitemap_path}'가 최상단 루트에 정상 생성되었습니다!")
-
-if __name__ == "__main__":
-    generate_evasion_sites()
-    generate_xml_sitemap()
+    print(f"✨ '/index.html'이 포함된 '{sitemap_path}'가 성공적으로 갱신되었습니다!")
