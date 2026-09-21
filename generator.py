@@ -1,10 +1,23 @@
 import os
+import random
 
-# 1. 사이트 기본 설정
+# 1. 고정 출력 경로 및 도메인 설정
+OUTPUT_DIR = "."  # 루트 기준으로 dist 및 지역 폴더 생성
 DOMAIN = "https://offmoderapy.netlify.app"
-NAVER_VERIFICATION = "a0e02e4f2dcaf270179e713519c690fbe449e8c5"
 
-# 2. 제휴 업체 정보 데이터
+# 2. 30여 가지 출장 회피형 마사지 및 테라피 키워드 풀
+evasion_keywords = [
+    "출장 웰니스 마사지", "출장 아로마 마사지", "출장 산후전후 마사지", "출장 스웨디시 마사지",
+    "출장 타이 마사지", "출장 홈타이 마사지", "출장 림프 순환 마사지", "출장 딥티슈 마사지",
+    "출장 스포츠 마사지", "출장 감성 마사지", "출장 경락 마사지", "출장 족욕 마사지",
+    "출장 스톤 마사지", "출장 산전산후 테라피 마사지", "출장 통증완화 마사지", "출장 전신오일 마사지",
+    "출장 디톡스 마사지", "출장 파워트리 마사지", "출장 산후조리 마사지", "출장 피로회복 마사지",
+    "출장 리프레시 마사지", "출장 순환마사지", "출장 스페셜 마사지", "출장 체형관리 마사지",
+    "출장 맞춤 마사지", "출장 스킨케어 마사지", "출장 건식 마사지", "출장 오일 마사지",
+    "출장 전신 마사지", "출장 힐링 마사지"
+]
+
+# 3. 제휴 업체 정보 데이터
 PARTNER_SHOPS = [
     {"name": "퀸즈홈테라피", "tel": "0507-1280-3296", "desc": "프리미엄 맞춤 홈케어 및 스웨디시 전문"},
     {"name": "한국골든테라피", "tel": "0507-1280-3360", "desc": "정통 힐링 아로마 및 전신 관리"},
@@ -13,12 +26,8 @@ PARTNER_SHOPS = [
     {"name": "주주테라피", "tel": "0507-1280-3197", "desc": "감성 힐링 및 전문 테라피 복합 코스"}
 ]
 
-# 3. 수도권 전 지역 및 모든 구·동 데이터 세트 (메인 및 evasion 공용)
+# 4. 수도권 전 지역 및 모든 구·동 데이터 세트
 seoul_regions = {
-    "gangnam": {"name": "강남구", "dongs": ["역삼동", "논현동", "청담동", "삼성동", "대치동", "신사동", "도곡동", "개포동", "일원동", "수서동"]},
-    "mapo": {"name": "마포구", "dongs": ["아현동", "공덕동", "도화동", "용강동", "대흥동", "염리동", "신수동", "서교동", "합정동", "망원동", "연남동", "성산동", "상암동"]},
-    "seocho": {"name": "서초구", "dongs": ["서초동", "반포동", "방배동", "잠원동", "양재동", "내곡동"]},
-    "songpa": {"name": "송파구", "dongs": ["잠실동", "신천동", "풍납동", "송파동", "석촌동", "삼전동", "가락동", "문정동", "방이동", "오금동"]},
     "jongno": {"name": "종로구", "dongs": ["청운동", "효자동", "삼청동", "부암동", "평창동", "무악동", "교남동", "가회동", "종로1가", "이화동", "혜화동", "창신동", "숭인동"]},
     "jung": {"name": "중구", "dongs": ["소공동", "회현동", "명동", "필동", "장충동", "광희동", "을지로동", "신당동", "다산동", "약수동", "청구동", "황학동", "중림동"]},
     "yongsan": {"name": "용산구", "dongs": ["후암동", "청파동", "원효로동", "효창동", "용문동", "이촌동", "이태원동", "한남동", "서빙고동", "보광동"]},
@@ -26,12 +35,13 @@ seoul_regions = {
     "gwangjin": {"name": "광진구", "dongs": ["중곡동", "능동", "구의동", "광장동", "자양동", "화양동", "군자동"]},
     "dongdaemun": {"name": "동대문구", "dongs": ["신설동", "용두동", "제기동", "전농동", "답십리동", "장안동", "청량리동", "회기동", "휘경동", "이문동"]},
     "jungnang": {"name": "중랑구", "dongs": ["면목동", "상봉동", "중화동", "묵동", "망우동", "신내동"]},
-    "seongbuk": {"name": "성북구", "dongs": ["성북동", "삼선동", "동선동", "돈암동", "안암동", "보문동", "정릉동", "길음동", "종암동", "월곡동", "장위동", "석관동"]},
+    "seongbuk": {"name": "성북동", "dongs": ["성북동", "삼선동", "동선동", "돈암동", "안암동", "보문동", "정릉동", "길음동", "종암동", "월곡동", "장위동", "석관동"]},
     "gangbuk": {"name": "강북구", "dongs": ["삼양동", "미아동", "번동", "수유동", "우이동", "인수동"]},
     "dobong": {"name": "도봉구", "dongs": ["창동", "도봉동", "쌍문동", "방학동"]},
     "nowon": {"name": "노원구", "dongs": ["월계동", "공릉동", "하계동", "중계동", "상계동"]},
     "eunpyeong": {"name": "은평구", "dongs": ["녹번동", "불광동", "갈현동", "구산동", "대조동", "응암동", "역촌동", "신사동", "증산동", "수색동", "진관동"]},
     "seodaemun": {"name": "서대문구", "dongs": ["천연동", "북아현동", "신촌동", "연희동", "홍제동", "홍은동", "남가좌동", "북가좌동"]},
+    "mapo": {"name": "마포구", "dongs": ["아현동", "공덕동", "도화동", "용강동", "대흥동", "염리동", "신수동", "서교동", "합정동", "망원동", "연남동", "성산동", "상암동"]},
     "yangcheon": {"name": "양천구", "dongs": ["목동", "신월동", "신정동"]},
     "gangseo": {"name": "강서구", "dongs": ["염창동", "등촌동", "화곡동", "가양동", "발산동", "공항동", "방화동"]},
     "guro": {"name": "구로구", "dongs": ["신도림동", "구로동", "고척동", "개봉동", "오류동", "수궁동", "항동"]},
@@ -39,6 +49,9 @@ seoul_regions = {
     "yeongdeungpo": {"name": "영등포구", "dongs": ["영등포동", "여의동", "당산동", "도림동", "문래동", "양평동", "신길동", "대림동"]},
     "dongjak": {"name": "동작구", "dongs": ["노량진동", "상도동", "흑석동", "사당동", "대방동", "신대방동"]},
     "gwanak": {"name": "관악구", "dongs": ["봉천동", "신림동", "남현동", "보라매동", "청림동", "행운동", "낙성대동"]},
+    "seocho": {"name": "서초구", "dongs": ["서초동", "반포동", "방배동", "잠원동", "양재동", "내곡동"]},
+    "gangnam": {"name": "강남구", "dongs": ["역삼동", "논현동", "청담동", "삼성동", "대치동", "신사동", "도곡동", "개포동", "일원동", "수서동"]},
+    "songpa": {"name": "송파구", "dongs": ["잠실동", "신천동", "풍납동", "송파동", "석촌동", "삼전동", "가락동", "문정동", "방이동", "오금동"]},
     "gangdong": {"name": "강동구", "dongs": ["고덕동", "상일동", "명일동", "암사동", "천호동", "성내동", "둔촌동"]}
 }
 
@@ -64,16 +77,29 @@ gyeonggi_regions = {
     "ansan-sangrok": {"name": "안산시 상록구", "dongs": ["일동", "이동", "사동", "본오동", "반월동"]},
     "ansan-danwon": {"name": "안산시 단원구", "dongs": ["고잔동", "와동", "원곡동", "초지동", "선부동"]},
     "uijeongbu": {"name": "의정부시", "dongs": ["의정부동", "호원동", "가능동", "녹양동", "신곡동", "송산동"]},
-    "gwangmyeong": {"name": "광명시", "dongs": ["광명동", "철산동", "하안동", "소하동"]},
+    "gwangmyeong": {"name": "광명동", "dongs": ["광명동", "철산동", "하안동", "소하동"]},
     "pyeongtaek": {"name": "평택시", "dongs": ["비전동", "서정동", "송탄동", "팽성읍", "안중읍"]},
+    "dongducheon": {"name": "동두천시", "dongs": ["생연동", "보산동", "불현동", "상패동"]},
+    "gwacheon": {"name": "과천시", "dongs": ["중앙동", "갈현동", "문원동", "별양동"]},
     "guri": {"name": "구리시", "dongs": ["갈매동", "동구동", "인창동", "수택동"]},
     "namyangju": {"name": "남양주시", "dongs": ["와부읍", "진접읍", "화도읍", "오남읍", "다산동"]},
+    "osan": {"name": "오산시", "dongs": ["중앙동", "서동", "세마동", "초평동", "대원동"]},
     "siheung": {"name": "시흥시", "dongs": ["신천동", "대야동", "은행동", "정왕동", "배곧동"]},
     "gunpo": {"name": "군포시", "dongs": ["군포동", "산본동", "금정동", "대야동"]},
+    "uiwang": {"name": "의왕시", "dongs": ["고천동", "부곡동", "내손동", "청계동"]},
     "hanam": {"name": "하남시", "dongs": ["천현동", "신장동", "풍산동", "미사동", "위례동"]},
     "paju": {"name": "파주시", "dongs": ["금촌동", "교하동", "운정동", "문산읍"]},
+    "icheon": {"name": "이천시", "dongs": ["증포동", "창전동", "중리동", "부발읍"]},
+    "anseong": {"name": "안성시", "dongs": ["안성동", "공도읍", "죽산면"]},
     "gimpo": {"name": "김포시", "dongs": ["사우동", "풍무동", "고촌읍", "통진읍", "장기동", "구래동"]},
-    "hwaseong": {"name": "화성시", "dongs": ["진안동", "병점동", "반월동", "동탄동", "봉담읍"]}
+    "hwaseong": {"name": "화성시", "dongs": ["진안동", "병점동", "반월동", "동탄동", "봉담읍"]},
+    "gwangju-gg": {"name": "광주시", "dongs": ["경안동", "송정동", "광남동", "오포읍"]},
+    "yangju": {"name": "양주시", "dongs": ["회천동", "양주동", "옥정동"]},
+    "pocheon": {"name": "포천시", "dongs": ["포천동", "소흘읍", "선단동"]},
+    "yeoju": {"name": "여주시", "dongs": ["여흥동", "중앙동", "오학동"]},
+    "yeoncheon": {"name": "연천군", "dongs": ["연천읍", "전곡읍"]},
+    "gapyeong": {"name": "가평군", "dongs": ["가평읍", "설악면", "청평면"]},
+    "yangpyeong": {"name": "양평군", "dongs": ["양평읍", "강상면", "용문면"]}
 }
 
 incheon_regions = {
@@ -82,247 +108,158 @@ incheon_regions = {
     "michuhol": {"name": "미추홀구", "dongs": ["도화동", "주안동", "학익동", "관교동", "문학동", "숭의동", "용현동"]},
     "yeonsu": {"name": "연수구", "dongs": ["옥련동", "연수동", "청학동", "동춘동", "송도동"]},
     "namdong": {"name": "남동구", "dongs": ["구월동", "간석동", "만수동", "서창동", "논현동", "고잔동"]},
-    "bupyeong": {"name": "부평구", "dongs": ["부평동", "산곡동", "청천동", "갈산동", "삼산동", "부개동"]},
+    "bupyeong": {"name": "부평동", "dongs": ["부평동", "산곡동", "청천동", "갈산동", "삼산동", "부개동"]},
     "gyeyang": {"name": "계양구", "dongs": ["효성동", "작전동", "계산동", "임학동"]},
-    "geomdan": {"name": "검단동", "dongs": ["마전동", "당하동", "원당동", "불로동", "검암동", "아라동"]}
+    "seohae": {"name": "서해구", "dongs": ["가좌동", "석남동", "신현동", "가정동", "연희동"]},
+    "geomdan": {"name": "검단동", "dongs": ["마전동", "당하동", "원당동", "불로동", "검암동", "아라동"]},
+    "ganghwa": {"name": "강화군", "dongs": ["강화읍", "선원면", "길상면"]},
+    "ongjin": {"name": "옹진군", "dongs": ["북도면", "연평면", "백령면"]}
 }
 
 all_regions_data = {
-    "seoul": {"name": "서울특별시", "districts": seoul_regions},
-    "gyeonggi": {"name": "경기도", "districts": gyeonggi_regions},
-    "incheon": {"name": "인천광역시", "districts": incheon_regions}
+    "seoul": {"name": "서울", "districts": seoul_regions},
+    "gyeonggi": {"name": "경기", "districts": gyeonggi_regions},
+    "incheon": {"name": "인천", "districts": incheon_regions}
 }
 
-# 4. 동적 허브 HTML 생성 함수
-def generate_hub_html():
-    hub_sections_html = ""
+# 5. HTML 템플릿 생성 함수
+def get_evasion_html_template(area_title, path_depth, sub_links=None):
+    prefix = "../" * path_depth
+    kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
     
-    for reg_key, reg_val in all_regions_data.items():
-        dist_cards_html = ""
-        for dist_key, dist_val in reg_val["districts"].items():
-            dong_links_html = ""
-            for dong in dist_val["dongs"]:
-                dong_links_html += f'<a href="./evasion/{reg_key}/{dist_key}/{dong}/index.html">{dong}</a>'
-            
-            dist_cards_html += f"""
-            <div class="district-card">
-                <h4><a href="./evasion/{reg_key}/{dist_key}/index.html" style="color:#ff6b35; text-decoration:none;">{dist_val['name']}</a></h4>
-                <div class="link-list">
-                    {dong_links_html}
-                </div>
-            </div>"""
-        
-        hub_sections_html += f"""
-        <div class="region-group">
-            <h3>🏙️ {reg_val['name']} 전지역 안내</h3>
-            <div class="district-grid">
-                {dist_cards_html}
+    sub_links_html = ""
+    if sub_links:
+        links_box = ""
+        for name, url in sub_links.items():
+            links_box += f'<a href="{url}" style="display:inline-block; margin:4px; padding:6px 12px; background:#1e1e24; color:#ff6b35; border:1px solid rgba(255,107,53,0.3); border-radius:6px; text-decoration:none; font-size:12px;">{name}</a> '
+        sub_links_html = f'''
+        <div style="margin:25px 0; background:#16161a; padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+            <h3 style="color:#ff6b35; font-size:15px; margin-bottom:12px;">🔍 {area_title} 하위 세부 지역 선택</h3>
+            <div>{links_box}</div>
+        </div>'''
+
+    partners_html = ""
+    for shop in PARTNER_SHOPS:
+        partners_html += f"""
+        <div style="background:#18181c; padding:20px; border-radius:12px; margin-bottom:15px; border-left:4px solid #ff6b35; border-top:1px solid rgba(255,255,255,0.05); border-right:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h4 style="color:#fff; font-size:16px; margin:0;">{shop['name']}</h4>
+                <span style="background:rgba(255,107,53,0.15); color:#ff6b35; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">프리미엄 파트너</span>
             </div>
+            <p style="color:#9ca3af; font-size:13px; margin:0 0 12px;">{shop['desc']} - {area_title} 전역 신속 방문</p>
+            <a href="tel:{shop['tel']}" style="background:#ff6b35; color:#fff; padding:8px 16px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:12px; display:inline-block;">📞 실시간 예약 전화: {shop['tel']}</a>
         </div>"""
+
+    page_title = f"{area_title} {kw1} 및 {kw2} 전문 안내 센터"
+    page_desc = f"{area_title} 전 지역 24시 방문 가능한 {kw1}, {kw2}, {kw3} 서비스. 철저한 1:1 맞춤 케어와 100% 현장 결제 안심 시스템."
 
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="naver-site-verification" content="{NAVER_VERIFICATION}" />
-    <title>오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시</title>
-    <meta name="description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
-    <meta name="robots" content="index,follow">
+    <title>{page_title}</title>
+    <meta name="description" content="{page_desc}">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="오프모드건마사랑 - 서울·경기·인천 프리미엄 힐링·아로마 스웨디시 24시">
-    <meta property="og:description" content="서울, 경기, 인천 수도권 전 지역 30분 내 방문. 출장 웰니스 마사지, 출장 아로마 마사지, 출장 산후전후 마사지 등 전문 관리사가 제공하는 100% 후불제 안심 케어 서비스.">
+    <meta property="og:title" content="{page_title}">
+    <meta property="og:description" content="{page_desc}">
     <meta property="og:url" content="{DOMAIN}/">
     <meta property="og:site_name" content="오프모드건마사랑">
 
-    <meta name="theme-color" content="#ff6b35">
-    <link rel="canonical" href="{DOMAIN}/">
-    <link rel="stylesheet" href="./styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        :root {{ --primary: #ff6b35; --text-dark: #1f2430; --text-muted: #5b6472; --bg-section: #fff5f0; }}
-        html {{ scroll-behavior: smooth; }}
-        body {{ font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); line-height: 1.7; background: var(--bg-section); }}
-        .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
-        
-        .header {{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(20, 20, 35, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }}
-        .header-inner {{ display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
-        .logo-text {{ font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }}
-        .logo-text span {{ color: var(--primary); }}
-        .nav {{ display: flex; gap: 24px; align-items: center; }}
-        .nav a {{ color: #fff; text-decoration: none; font-size: 0.95rem; }}
-        .nav-cta {{ background: var(--primary); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }}
-
-        .hero {{ padding: 150px 20px 80px; text-align: center; background: linear-gradient(180deg, #15151f 0%, #252030 100%); color: #fff; }}
-        .hero h1 {{ font-size: clamp(28px, 5vw, 44px); font-weight: 700; margin-bottom: 16px; line-height: 1.3; }}
-        .hero h1 span {{ color: var(--primary); }}
-        .hero p {{ font-size: 1.05rem; color: #b5b5c6; margin-bottom: 20px; }}
-
-        .section {{ padding: 80px 0; }}
-        .section-white {{ background: #fff; }}
-        .section-title {{ text-align: center; margin-bottom: 40px; }}
-        .section-title h2 {{ font-size: 1.8rem; margin-bottom: 10px; color: var(--text-dark); }}
-        .section-title p {{ color: var(--text-muted); }}
-
-        .partner-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }}
-        .card {{ background: #fdfcfb; border: 1px solid #eee; border-radius: 16px; padding: 25px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: transform 0.2s; }}
-        .card:hover {{ transform: translateY(-3px); }}
-        .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
-        .card h3 {{ font-size: 1.15rem; color: var(--text-dark); font-weight: 700; }}
-        .badge {{ background: #fff5f0; color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }}
-        .card p {{ color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }}
-        .card-footer {{ display: flex; justify-content: space-between; align-items: center; }}
-        .tel {{ font-weight: bold; color: var(--text-dark); font-size: 0.95rem; }}
-        .btn-call {{ background: var(--primary); color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }}
-
-        .evasion-hub {{ background: #121218; color: #fff; padding: 80px 0; }}
-        .region-group {{ background: #181822; border: 1px solid rgba(255,107,53,0.2); border-radius: 16px; padding: 30px; margin-bottom: 30px; }}
-        .region-group h3 {{ color: var(--primary); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid rgba(255,107,53,0.3); padding-bottom: 10px; }}
-        .district-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }}
-        .district-card {{ background: #1f1f2e; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }}
-        .district-card h4 {{ color: #fff; font-size: 1.05rem; margin-bottom: 10px; }}
-        .link-list {{ display: flex; flex-wrap: wrap; gap: 6px; max-height: 150px; overflow-y: auto; padding-right: 4px; }}
-        .link-list::-webkit-scrollbar {{ width: 4px; }}
-        .link-list::-webkit-scrollbar-thumb {{ background: rgba(255,107,53,0.5); border-radius: 2px; }}
-        .link-list a {{ background: #2a2a3d; color: #d1d5db; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; transition: all 0.2s; }}
-        .link-list a:hover {{ background: var(--primary); color: #fff; }}
-
-        footer {{ background: #111; color: #888; padding: 40px 20px; text-align: center; font-size: 0.85rem; line-height: 1.6; }}
-        footer strong {{ color: #aaa; }}
-    </style>
+    <link rel="stylesheet" href="{prefix}styles.css">
 </head>
-<body>
-
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="logo-text">오프모드<span>건마사랑</span></a>
-            <nav class="nav">
-                <a href="#partners">공식제휴샵</a>
-                <a href="#evasion-regions">출장지역안내</a>
-                <a href="tel:050712803344" class="nav-cta">제휴 문의</a>
-            </nav>
+<body style="background:#0a0a0f; color:#e5e7eb; font-family:'Noto Sans KR', sans-serif; margin:0; padding:20px; line-height:1.6;">
+    <div style="max-width:850px; margin:30px auto; background:#121218; padding:35px; border-radius:20px; border:1px solid rgba(255,107,53,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        
+        <nav style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <a href="{prefix}../index.html" style="color:#ff6b35; text-decoration:none; font-weight:bold; font-size:14px;">← 오프모드 메인으로 돌아가기</a>
+            <span style="background:rgba(255,107,53,0.1); color:#ff6b35; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold;">✨ SEO 최적화 회피형 특별 페이지</span>
+        </nav>
+        
+        <div style="border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px; margin-bottom:25px;">
+            <h1 style="font-size:24px; color:#fff; margin:0 0 10px; font-weight:700;">{area_title} <span style="color:#ff6b35;">{kw1}</span> & <span style="color:#ff6b35;">{kw2}</span> 가이드</h1>
+            <p style="color:#9ca3af; font-size:14px; margin:0;">
+                바쁜 일상에 지친 몸과 마음을 위한 {area_title} 맞춤형 프리미엄 홈케어입니다. 
+                전문 테라피스트가 고객님 계신 곳으로 직접 방문하여 {kw1}, {kw2}, {kw3} 등 최고급 힐링 프로그램을 제공해 드립니다.
+            </p>
         </div>
-    </header>
+        
+        {sub_links_html}
 
-    <section class="hero">
-        <div class="container">
-            <div style="margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                <img src="images/banner.jpg" alt="오프모드건마사랑 프리미엄 배너" style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
-            </div>
-            <span style="color: var(--primary); font-size: 0.85rem; letter-spacing: 2px; font-weight: 700; display: inline-block; margin-bottom: 15px;">24H 수도권 프라이빗 힐링 플랫폼</span>
-            <h1>일상의 긴장을 끄고(Off),<br>완벽한 휴식을 켜다 <span>오프모드건마사랑</span></h1>
-            <p>서울·경기·인천 수도권 전 지역 신속 방문 · 100% 후불제 안심 케어 서비스</p>
+        <div style="margin-top:30px;">
+            <h2 style="font-size:17px; color:#fff; margin-bottom:15px; border-left:3px solid #ff6b35; padding-left:10px;">🏆 {area_title} 공식 인증 제휴 센터</h2>
+            {partners_html}
         </div>
-    </section>
 
-    <section class="section section-white" id="partners">
-        <div class="container">
-            <div class="section-title">
-                <h2>공식 제휴 힐링샵 안내</h2>
-                <p>엄선된 전문 관리사의 맞춤형 프리미엄 케어 서비스</p>
-            </div>
-            <div class="partner-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>퀸즈홈테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>프리미엄 맞춤 홈케어 및 스웨디시 전문 관리 프로그램</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3296</span>
-                        <a href="tel:050712803296" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>한국골든테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>정통 힐링 아로마 및 피로 회복 전신 관리 시스템</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3360</span>
-                        <a href="tel:050712803360" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>한국미인테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>편안하고 아늑한 환경에서 진행되는 1:1 맞춤 케어</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3201</span>
-                        <a href="tel:050712803201" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>오늘밤테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>24시 신속 방문 및 일상 속 깊은 피로 회복 전문</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3199</span>
-                        <a href="tel:050712803199" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>주주테라피</h3>
-                        <span class="badge">제휴점</span>
-                    </div>
-                    <p>부드러운 감성 힐링과 전문 테라피 복합 코스</p>
-                    <div class="card-footer">
-                        <span class="tel">📞 0507-1280-3197</span>
-                        <a href="tel:050712803197" class="btn-call">전화 연결</a>
-                    </div>
-                </div>
-            </div>
+        <div style="margin-top:40px; text-align:center; color:#6b7280; font-size:12px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px;">
+            <p>본 페이지는 검색엔진 최적화를 위해 제공되는 {area_title} 지역 맞춤형 정보 안내 페이지입니다.</p>
+            <p>&copy; 2026 오프모드건마사랑 All rights reserved.</p>
         </div>
-    </section>
-
-    <!-- 🌟 동적으로 렌더링된 수도권 전 지역 허브 링크 섹션 -->
-    <section class="evasion-hub" id="evasion-regions">
-        <div class="container">
-            <div class="section-title">
-                <h2 style="color: #fff;">수도권 출장 웰니스 & 아로마 마사지 지역별 안내</h2>
-                <p style="color: #b5b5c6;">서울·경기·인천 모든 구·동 단위 실시간 1:1 안심 방문 제휴 정보</p>
-            </div>
-            
-            {hub_sections_html}
-
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p><strong>오프모드건마사랑</strong> | 수도권 힐링 정보 플랫폼</p>
-            <p>본 사이트는 제휴 업체의 정보를 안내하는 정보 플랫폼이며 통신판매의 당사자가 아닙니다. 서비스 이용 관련 사항은 각 제휴점에 직접 문의하시기 바랍니다.</p>
-            <p style="margin-top: 20px;">&copy; 2026 오프모드건마사랑 All rights reserved.</p>
-        </div>
-    </footer>
-
+    </div>
 </body>
-</html>"""
+</html>
+"""
 
-# 5. 실행부 (루트 및 dist에 index.html 동시 생성)
+# 6. HTML 페이지 빌드 함수
+def generate_evasion_sites():
+    print("🚀 [수도권 전 지역 완벽 포함] 구·동 3단계 계층 구조 빌드 시작...")
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    page_count = 0
+    for reg_key, reg_val in all_regions_data.items():
+        reg_dir = os.path.join(OUTPUT_DIR, reg_key)
+        os.makedirs(reg_dir, exist_ok=True)
+        
+        for dist_key, dist_val in reg_val["districts"].items():
+            dist_dir = os.path.join(reg_dir, dist_key)
+            os.makedirs(dist_dir, exist_ok=True)
+            
+            dong_links = {dong: f"./{dong}/index.html" for dong in dist_val["dongs"]}
+            with open(os.path.join(dist_dir, "index.html"), "w", encoding="utf-8") as f:
+                f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']}", 1, sub_links=dong_links))
+            page_count += 1
+
+            for dong in dist_val["dongs"]:
+                dong_dir = os.path.join(dist_dir, dong)
+                os.makedirs(dong_dir, exist_ok=True)
+                
+                with open(os.path.join(dong_dir, "index.html"), "w", encoding="utf-8") as f:
+                    f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 2))
+                page_count += 1
+
+    print(f"✨ 총 {page_count}개의 수도권 전 지역 회피형 페이지가 성공적으로 생성되었습니다!")
+
+# 7. 🌟 sitemap.xml 자동 생성 함수 (누락 페이지 완벽 방지)
+def generate_xml_sitemap():
+    print("📄 sitemap.xml 자동 생성 중...")
+    sitemap_path = "sitemap.xml"
+    
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # 1. 메인 홈 URL 추가
+    xml_content += f'  <url>\n    <loc>{DOMAIN}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
+    
+    # 2. 모든 구·시 및 세부 동 URL을 sitemap.xml에 동적 반영
+    for reg_key, reg_val in all_regions_data.items():
+        for dist_key, dist_val in reg_val["districts"].items():
+            
+            # 구/시 단위 URL
+            dist_url = f"{DOMAIN}/{reg_key}/{dist_key}"
+            xml_content += f'  <url>\n    <loc>{dist_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n'
+            
+            # 세부 동 단위 URL
+            for dong in dist_val["dongs"]:
+                dong_url = f"{DOMAIN}/{reg_key}/{dist_key}/{dong}"
+                xml_content += f'  <url>\n    <loc>{dong_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.85</priority>\n  </url>\n'
+                
+    xml_content += '</urlset>'
+    
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write(xml_content)
+    print(f"✨ 모든 구·동 주소가 포함된 '{sitemap_path}'가 성공적으로 갱신되었습니다!")
+
 if __name__ == "__main__":
-    output_dir = "dist"
-    os.makedirs(output_dir, exist_ok=True)
-    
-    final_index_html = generate_hub_html()
-    
-    # dist/index.html 생성
-    with open(os.path.join(output_dir, "index.html"), "w", encoding="utf-8") as f:
-        f.write(final_index_html)
-        
-    # 최상단 루트 index.html 생성 (Netlify 404 방지)
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(final_index_html)
-        
-    print("✨ 수도권 모든 지역 링크가 동적으로 포함된 메인 index.html 생성 완료!")
+    generate_evasion_sites()
+    generate_xml_sitemap()
