@@ -2,7 +2,7 @@ import os
 import random
 
 # 1. 고정 출력 경로 및 도메인 설정
-OUTPUT_DIR = "."  # 루트 기준으로 dist 및 지역 폴더 생성
+OUTPUT_DIR = "."  
 DOMAIN = "https://offmoderapy.netlify.app"
 
 # 2. 30여 가지 출장 회피형 마사지 및 테라피 키워드 풀
@@ -45,7 +45,7 @@ seoul_regions = {
     "yangcheon": {"name": "양천구", "dongs": ["목동", "신월동", "신정동"]},
     "gangseo": {"name": "강서구", "dongs": ["염창동", "등촌동", "화곡동", "가양동", "발산동", "공항동", "방화동"]},
     "guro": {"name": "구로구", "dongs": ["신도림동", "구로동", "고척동", "개봉동", "오류동", "수궁동", "항동"]},
-    "geumcheon": {"name": "금천구", "dongs": ["가산동", "독산동", "시흥동"]},
+    "geumcheon": {"name": "금천동", "dongs": ["가산동", "독산동", "시흥동"]},
     "yeongdeungpo": {"name": "영등포구", "dongs": ["영등포동", "여의동", "당산동", "도림동", "문래동", "양평동", "신길동", "대림동"]},
     "dongjak": {"name": "동작구", "dongs": ["노량진동", "상도동", "흑석동", "사당동", "대방동", "신대방동"]},
     "gwanak": {"name": "관악구", "dongs": ["봉천동", "신림동", "남현동", "보라매동", "청림동", "행운동", "낙성대동"]},
@@ -122,7 +122,7 @@ all_regions_data = {
     "incheon": {"name": "인천", "districts": incheon_regions}
 }
 
-# 5. HTML 템플릿 생성 함수
+# 5. HTML 템플릿 생성 함수 (evasion 경로 반영)
 def get_evasion_html_template(area_title, path_depth, sub_links=None):
     prefix = "../" * path_depth
     kw1, kw2, kw3 = random.sample(evasion_keywords, 3)
@@ -173,7 +173,7 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
     <div style="max-width:850px; margin:30px auto; background:#121218; padding:35px; border-radius:20px; border:1px solid rgba(255,107,53,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
         <nav style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-            <a href="{prefix}../index.html" style="color:#ff6b35; text-decoration:none; font-weight:bold; font-size:14px;">← 오프모드 메인으로 돌아가기</a>
+            <a href="{prefix}../../index.html" style="color:#ff6b35; text-decoration:none; font-weight:bold; font-size:14px;">← 오프모드 메인으로 돌아가기</a>
             <span style="background:rgba(255,107,53,0.1); color:#ff6b35; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold;">✨ SEO 최적화 회피형 특별 페이지</span>
         </nav>
         
@@ -201,14 +201,15 @@ def get_evasion_html_template(area_title, path_depth, sub_links=None):
 </html>
 """
 
-# 6. HTML 페이지 빌드 함수
+# 6. HTML 페이지 빌드 함수 (evasion 폴더 아래로 생성)
 def generate_evasion_sites():
-    print("🚀 [수도권 전 지역 완벽 포함] 구·동 3단계 계층 구조 빌드 시작...")
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    print("🚀 [/evasion/ 구조] 구·동 3단계 계층 구조 빌드 시작...")
+    evasion_root = os.path.join(OUTPUT_DIR, "evasion")
+    os.makedirs(evasion_root, exist_ok=True)
     
     page_count = 0
     for reg_key, reg_val in all_regions_data.items():
-        reg_dir = os.path.join(OUTPUT_DIR, reg_key)
+        reg_dir = os.path.join(evasion_root, reg_key)
         os.makedirs(reg_dir, exist_ok=True)
         
         for dist_key, dist_val in reg_val["districts"].items():
@@ -217,7 +218,7 @@ def generate_evasion_sites():
             
             dong_links = {dong: f"./{dong}/index.html" for dong in dist_val["dongs"]}
             with open(os.path.join(dist_dir, "index.html"), "w", encoding="utf-8") as f:
-                f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']}", 1, sub_links=dong_links))
+                f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']}", 2, sub_links=dong_links))
             page_count += 1
 
             for dong in dist_val["dongs"]:
@@ -225,14 +226,14 @@ def generate_evasion_sites():
                 os.makedirs(dong_dir, exist_ok=True)
                 
                 with open(os.path.join(dong_dir, "index.html"), "w", encoding="utf-8") as f:
-                    f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 2))
+                    f.write(get_evasion_html_template(f"{reg_val['name']} {dist_val['name']} {dong}", 3))
                 page_count += 1
 
-    print(f"✨ 총 {page_count}개의 수도권 전 지역 회피형 페이지가 성공적으로 생성되었습니다!")
+    print(f"✨ 총 {page_count}개의 /evasion/ 지역 회피형 페이지가 성공적으로 생성되었습니다!")
 
-# 7. 🌟 sitemap.xml 자동 생성 함수 (누락 페이지 완벽 방지)
+# 7. 🌟 sitemap.xml 자동 생성 함수 (/evasion/ 경로 반영)
 def generate_xml_sitemap():
-    print("📄 sitemap.xml 자동 생성 중...")
+    print("📄 /evasion/ 경로가 포함된 sitemap.xml 자동 생성 중...")
     sitemap_path = "sitemap.xml"
     
     xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -241,24 +242,24 @@ def generate_xml_sitemap():
     # 1. 메인 홈 URL 추가
     xml_content += f'  <url>\n    <loc>{DOMAIN}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n'
     
-    # 2. 모든 구·시 및 세부 동 URL을 sitemap.xml에 동적 반영
+    # 2. 모든 구·시 및 세부 동 URL을 /evasion/ 경로를 포함하여 sitemap.xml에 반영
     for reg_key, reg_val in all_regions_data.items():
         for dist_key, dist_val in reg_val["districts"].items():
             
-            # 구/시 단위 URL
-            dist_url = f"{DOMAIN}/{reg_key}/{dist_key}"
+            # 구/시 단위 URL (예: https://offmoderapy.netlify.app/evasion/seoul/mapo)
+            dist_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}"
             xml_content += f'  <url>\n    <loc>{dist_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n'
             
-            # 세부 동 단위 URL
+            # 세부 동 단위 URL (예: https://offmoderapy.netlify.app/evasion/seoul/mapo/아현동)
             for dong in dist_val["dongs"]:
-                dong_url = f"{DOMAIN}/{reg_key}/{dist_key}/{dong}"
+                dong_url = f"{DOMAIN}/evasion/{reg_key}/{dist_key}/{dong}"
                 xml_content += f'  <url>\n    <loc>{dong_url}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.85</priority>\n  </url>\n'
                 
     xml_content += '</urlset>'
     
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write(xml_content)
-    print(f"✨ 모든 구·동 주소가 포함된 '{sitemap_path}'가 성공적으로 갱신되었습니다!")
+    print(f"✨ /evasion/ 주소가 포함된 '{sitemap_path}'가 성공적으로 갱신되었습니다!")
 
 if __name__ == "__main__":
     generate_evasion_sites()
